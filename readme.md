@@ -1,6 +1,6 @@
 # JSHint
 
-[Atom](https://atom.io/packages/jshint) package
+[Atom package](https://atom.io/packages/jshint)
 
 > Run [JSHint](http://jshint.com)
 
