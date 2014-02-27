@@ -1,0 +1,23 @@
+{
+  "name": "jshint",
+  "version": "0.0.0",
+  "description": "Run JSHint",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "repository": "https://github.com/sindresorhus/atom-jshint",
+  "private": true,
+  "activationEvents": [
+    "jshint"
+  ],
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "http://sindresorhus.com"
+  },
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+    "jshint": "^2.4.4"
+  }
+}
