@@ -4,7 +4,7 @@
 
 > Validate JavaScript with [JSHint](http://jshint.com)
 
-![](screenshot.png)
+![](https://f.cloud.github.com/assets/170270/2303285/d74aedfc-a1b2-11e3-9552-98f32768d888.png)
 
 
 ## Features
