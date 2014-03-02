@@ -31,6 +31,7 @@ function displayError(error, editor, editorView) {
 function lint() {
 	var editor = atom.workspace.getActiveEditor();
 	var editorView = atom.workspaceView.getActiveView();
+	var file = editor.getUri();
 
 	if (!editor) {
 		return;
@@ -40,12 +41,16 @@ function lint() {
 		return;
 	}
 
+	if (typeof file === 'undefined') {
+		file = '';
+	}
+
 	// reset
 	editorView.resetDisplay();
 	editorView.gutter.find('.jshint-gutter').remove();
 	atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
 
-	jshint(editor.getText(), loadConfig(editor.getUri()));
+	jshint(editor.getText(), loadConfig(file));
 
 	// workaround the errors array sometimes containing `null`
 	var errors = _.compact(jshint.errors);

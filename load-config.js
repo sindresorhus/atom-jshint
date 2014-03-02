@@ -52,7 +52,7 @@ function findFile(name, dir) {
  * @returns {string} a path to the config file
  */
 function findConfig(file) {
-  var dir  = file ? path.dirname(path.resolve(file)) : null;
+  var dir  = path.dirname(path.resolve(file));
   var envs = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
   var home = path.normalize(path.join(envs, ".jshintrc"));
 
@@ -75,7 +75,7 @@ function findConfig(file) {
  * @returns {object} config object
  */
 function loadNpmConfig(file) {
-  var dir = file ? path.dirname(path.resolve(file)) : null;
+  var dir = path.dirname(path.resolve(file));
   var fp  = findFile("package.json", dir);
 
   if (!fp)
