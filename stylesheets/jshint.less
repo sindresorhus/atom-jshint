@@ -1,0 +1,20 @@
+@import 'ui-variables';
+
+.jshint-line {
+	background-color: fade(@background-color-error, 20%);
+}
+
+.jshint-gutter {
+	display: inline-block;
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	top: 4px;
+	right: 4px;
+	background-color: fade(@background-color-error, 50%);
+	border-radius: 10px;
+	transition: background-color 0.1s linear;
+	&:hover {
+		background-color: @background-color-error;
+	}
+}

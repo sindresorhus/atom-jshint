@@ -2,24 +2,19 @@
 
 [Atom package](https://atom.io/packages/jshint)
 
-> Run [JSHint](http://jshint.com)
+> Validate JavaScript with [JSHint](http://jshint.com)
 
 ![](screenshot.png)
 
 
-## Work in progress
+## Features
 
-Currently only marks code that has errors.
-
-
-## Todo
-
-- Show the error on hover (?)
-
-
-## Usage
-
-Open the Command Palette and type `Jshint` to activate.
+- Validates in realtime.
+- Marks gutter and line on error.
+- Hover over the gutter icon to see the errors.
+- First error is displayed in the statusbar.
+- Reads your `.jshintrc` config and `jshintConfig` in package.json using the same logic as JSHint.
+- Option to only validate on save.
 
 
 ## License
