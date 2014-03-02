@@ -40,12 +40,15 @@ function lint() {
 		return;
 	}
 
+	var file = editor.getUri();
+	var config = file ? loadConfig(file) : {};
+
 	// reset
 	editorView.resetDisplay();
 	editorView.gutter.find('.jshint-gutter').remove();
 	atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
 
-	jshint(editor.getText(), loadConfig(editor.getUri()));
+	jshint(editor.getText(), config);
 
 	// workaround the errors array sometimes containing `null`
 	var errors = _.compact(jshint.errors);
