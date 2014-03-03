@@ -12,7 +12,8 @@ function updateStatusbar(error) {
 }
 
 function displayError(error, editor, editorView) {
-	var row = error[0].line - 1;
+	var line = error[0].line || 1; // jshint reports `line: 0` when config error
+	var row = line - 1;
 	var gutter = editorView.gutter;
 	var bufferRange = editor.bufferRangeForBufferRow(row);
 	bufferRange.start.column = bufferRange.end.column = error.character;
