@@ -92,10 +92,14 @@ function registerEvents() {
 		var buffer = editor.getBuffer();
 		var events = 'saved contents-modified';
 
+		editor.off('scroll-top-changed');
 		plugin.unsubscribe(buffer);
 
 		if (atom.config.get('jshint.validateOnlyOnSave')) {
 			events = 'saved';
+		} else {
+			// TODO: find a less noisy event for this
+			editor.on('scroll-top-changed', _.debounce(lint, 200));
 		}
 
 		plugin.subscribe(buffer, events, lint);
