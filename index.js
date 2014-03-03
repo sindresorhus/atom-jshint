@@ -21,7 +21,7 @@ function displayError(error, editor, editorView) {
 	lineEl.addClass('jshint-line');
 
 	var reasons = _.map(error, function (el) {
-		return el.character + ': ' + _.escape(el.reason);
+		return el.character + ': ' + el.reason;
 	}).join('\n\n');
 
 	var gutterRow = gutter.find(gutter.getLineNumberElement(row));
