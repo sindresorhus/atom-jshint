@@ -15,7 +15,7 @@
 ## Features
 
 - Validates in realtime.
-- Line number on error.
+- Line and line number turns red on error.
 - Hover over the line number to see the errors.
 - First error is displayed in the statusbar.
 - Reads your `.jshintrc` config and `jshintConfig` in package.json using the same logic as JSHint.
