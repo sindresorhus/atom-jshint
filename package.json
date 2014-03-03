@@ -1,6 +1,6 @@
 {
   "name": "jshint",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Validate JavaScript with JSHint",
   "license": "MIT",
   "repository": "https://github.com/sindresorhus/atom-jshint",
