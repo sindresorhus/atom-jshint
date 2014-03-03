@@ -107,7 +107,6 @@ plugin.configDefaults = {
 };
 
 plugin.activate = function () {
-	//atom.workspaceView.command('jshint', lint);
 	registerEvents();
 	plugin.subscribe(atom.config.observe('jshint.validateOnlyOnSave', registerEvents));
 };

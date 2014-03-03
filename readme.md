@@ -9,7 +9,11 @@
 
 ## Install
 
-`apm install jshint` or Settings ➔ Packages
+```bash
+$ apm install jshint
+```
+
+Or Settings ➔ Packages ➔ Search for `jshint` *(install `Jshint`, not `Atom Jshint`)*
 
 
 ## Features
