@@ -4,7 +4,7 @@
 
 > Validate JavaScript with [JSHint](http://jshint.com)
 
-![](https://f.cloud.github.com/assets/170270/2303285/d74aedfc-a1b2-11e3-9552-98f32768d888.png)
+![](https://f.cloud.github.com/assets/170270/2307241/f0460f66-a2a3-11e3-9382-e8d27ceb0499.png)
 
 
 ## Install
