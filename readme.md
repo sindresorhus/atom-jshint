@@ -15,8 +15,8 @@
 ## Features
 
 - Validates in realtime.
-- Marks gutter and line on error.
-- Hover over the gutter icon to see the errors.
+- Line number on error.
+- Hover over the line number to see the errors.
 - First error is displayed in the statusbar.
 - Reads your `.jshintrc` config and `jshintConfig` in package.json using the same logic as JSHint.
 - Option to only validate on save.
