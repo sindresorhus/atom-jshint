@@ -50,7 +50,7 @@ function lint() {
 	editorView.gutter.find('.jshint-line-number').removeClass('jshint-line-number');
 	atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
 
-	jshint(editor.getText(), config);
+	jshint(editor.getText(), config, config.globals);
 
 	// workaround the errors array sometimes containing `null`
 	var errors = _.compact(jshint.errors);
