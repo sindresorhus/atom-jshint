@@ -25,7 +25,6 @@ function displayError(error, editor, editorView) {
 	}).join('\n\n');
 
 	var gutterRow = gutter.find(gutter.getLineNumberElement(row));
-	gutterRow.removeAttr('title');
 	gutterRow.attr('title', reasons);
 	gutterRow.addClass('jshint-line-number');
 }
