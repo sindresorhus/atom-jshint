@@ -21,11 +21,12 @@ function displayError(error, editor, editorView) {
 	lineEl.addClass('jshint-line');
 
 	var reasons = _.map(error, function (el) {
-		return el.character + ': ' + _.escape(el.reason);
+		return el.character + ': ' + el.reason;
 	}).join('\n\n');
 
 	var gutterRow = gutter.find(gutter.getLineNumberElement(row));
-	gutterRow.append('<div class="jshint-gutter" title="' + reasons + '">');
+	gutterRow.attr('title', reasons);
+	gutterRow.addClass('jshint-line-number');
 }
 
 function lint() {
@@ -45,7 +46,7 @@ function lint() {
 
 	// reset
 	editorView.resetDisplay();
-	editorView.gutter.find('.jshint-gutter').remove();
+	editorView.gutter.find('.jshint-line-number').removeClass('jshint-line-number');
 	atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
 
 	jshint(editor.getText(), config);
