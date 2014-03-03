@@ -8,11 +8,11 @@ var plugin = module.exports;
 Subscriber.extend(plugin);
 
 function updateStatusbar(error) {
-	atom.workspaceView.statusBar.appendLeft('<span id="jshint-statusbar">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
+	atom.workspaceView.statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
 }
 
 function displayError(error, editor, editorView) {
-	var line = error[0].line || 1; // jshint reports `line: 0` when config error
+	var line = error[0].line || 1; // JSHint reports `line: 0` when config error
 	var row = line - 1;
 	var gutter = editorView.gutter;
 	var bufferRange = editor.bufferRangeForBufferRow(row);
