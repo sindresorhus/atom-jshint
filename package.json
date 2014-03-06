@@ -1,6 +1,6 @@
 {
   "name": "jshint",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Validate JavaScript with JSHint while typing. By @sindresorhus",
   "license": "MIT",
   "repository": "sindresorhus/atom-jshint",
