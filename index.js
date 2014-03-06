@@ -102,7 +102,7 @@ function registerEvents() {
 			editor.on('scroll-top-changed', _.debounce(lint, 200));
 		}
 
-		plugin.subscribe(buffer, events, lint);
+		plugin.subscribe(buffer, events, _.debounce(lint, 50));
 	});
 }
 

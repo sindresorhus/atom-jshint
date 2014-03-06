@@ -1,9 +1,9 @@
 {
   "name": "jshint",
   "version": "0.2.5",
-  "description": "Validate JavaScript with JSHint while typing. The best one. ✌⊂(✰‿✰)つ✌",
+  "description": "Validate JavaScript with JSHint while typing. By @sindresorhus",
   "license": "MIT",
-  "repository": "https://github.com/sindresorhus/atom-jshint",
+  "repository": "sindresorhus/atom-jshint",
   "private": true,
   "author": {
     "name": "Sindre Sorhus",
