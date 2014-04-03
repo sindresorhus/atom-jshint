@@ -28,4 +28,4 @@ Or Settings ➔ Packages ➔ Search for `jshint` *(install `Jshint`, not `Atom J
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+[MIT](http://opensource.org/licenses/MIT) © [Sindre Sorhus](http://sindresorhus.com)
