@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "jshint": "^2.4.4",
+    "jshint-jsx": "^0.1.0",
     "lodash": "^2.4.1",
     "emissary": "^1.0.0",
     "shelljs": "^0.2.6"

@@ -2,6 +2,7 @@
 var _ = require('lodash');
 var Subscriber = require('emissary').Subscriber;
 var jshint = require('jshint').JSHINT;
+var jsxhint = require('jshint-jsx').JSXHINT;
 var loadConfig = require('./load-config');
 var plugin = module.exports;
 
@@ -50,10 +51,11 @@ function lint() {
 	editorView.gutter.find('.jshint-line-number').removeClass('jshint-line-number');
 	atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
 
-	jshint(editor.getText(), config, config.globals);
+	var linter = atom.config.get('jshint.transformJsx') ? jsxhint : jshint;
+	linter(editor.getText(), config, config.globals);
 
 	// workaround the errors array sometimes containing `null`
-	var errors = _.compact(jshint.errors);
+	var errors = _.compact(linter.errors);
 
 	if (errors.length === 0) {
 		return;
@@ -107,7 +109,8 @@ function registerEvents() {
 }
 
 plugin.configDefaults = {
-	validateOnlyOnSave: false
+	validateOnlyOnSave: false,
+	transformJsx: false
 };
 
 plugin.activate = function () {
