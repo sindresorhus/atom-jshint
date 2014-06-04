@@ -1,7 +1,7 @@
 {
   "name": "jshint",
   "version": "0.3.0",
-  "description": "Validate JavaScript with JSHint while typing. By @sindresorhus",
+  "description": "Validate JavaScript with JSHint. In realtime or on save. Supports JSX (React). By @sindresorhus",
   "license": "MIT",
   "repository": "sindresorhus/atom-jshint",
   "private": true,
@@ -14,10 +14,10 @@
     "atom": ">=0.60.0"
   },
   "dependencies": {
+    "emissary": "^1.0.0",
     "jshint": "^2.4.4",
     "jshint-jsx": "^0.1.0",
     "lodash": "^2.4.1",
-    "emissary": "^1.0.0",
-    "shelljs": "^0.2.6"
+    "shelljs": "^0.3.0"
   }
 }
