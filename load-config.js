@@ -1,4 +1,5 @@
 'use strict';
+var fs = require('fs');
 var path = require('path');
 var shjs = require('shelljs');
 var cli = require('jshint/src/cli');
@@ -92,8 +93,19 @@ function loadNpmConfig(file) {
 }
 // / //
 
+function loadConfigIfValid(filename) {
+	try {
+		JSON.parse(fs.readFileSync(filename));
+		return cli.loadConfig(filename);
+	} catch (e) {
+	}
+	return {};
+}
+
 module.exports = function (file) {
-	var config = loadNpmConfig(file) || cli.loadConfig(findConfig(file));
-	delete config.dirname;
+	var config = loadNpmConfig(file) || loadConfigIfValid(findConfig(file));
+	if (config && config.dirname) {
+		delete config.dirname;
+	}
 	return config;
 };
