@@ -28,9 +28,9 @@ function findFile(name, dir) {
     return findFileResults[filename];
   }
 
-  var parent = path.resolve(dir, "../");
+  var parent = path.resolve(dir, '../');
 
-  if (shjs.test("-e", filename)) {
+  if (shjs.test('-e', filename)) {
     findFileResults[filename] = filename;
     return filename;
   }
@@ -54,14 +54,16 @@ function findFile(name, dir) {
 function findConfig(file) {
   var dir  = path.dirname(path.resolve(file));
   var envs = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-  var home = path.normalize(path.join(envs, ".jshintrc"));
+  var home = path.normalize(path.join(envs, '.jshintrc'));
 
-  var proj = findFile(".jshintrc", dir);
-  if (proj)
+  var proj = findFile('.jshintrc', dir);
+  if (proj) {
     return proj;
+  }
 
-  if (shjs.test("-e", home))
+  if (shjs.test('-e', home)) {
     return home;
+  }
 
   return null;
 }
@@ -76,10 +78,11 @@ function findConfig(file) {
  */
 function loadNpmConfig(file) {
   var dir = path.dirname(path.resolve(file));
-  var fp  = findFile("package.json", dir);
+  var fp  = findFile('package.json', dir);
 
-  if (!fp)
+  if (!fp) {
     return null;
+  }
 
   try {
     return require(fp).jshintConfig;
