@@ -96,7 +96,7 @@ function loadNpmConfig(file) {
 function loadConfigIfValid(filename) {
 	var strip = require('strip-json-comments');
 	try {
-		JSON.parse(strip(fs.readFileSync(filename)));
+		JSON.parse(strip(fs.readFileSync(filename, 'utf8')));
 		return cli.loadConfig(filename);
 	} catch (e) {
 	}
