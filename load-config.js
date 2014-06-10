@@ -94,8 +94,9 @@ function loadNpmConfig(file) {
 // / //
 
 function loadConfigIfValid(filename) {
+	var strip = require('strip-json-comments');
 	try {
-		JSON.parse(fs.readFileSync(filename));
+		JSON.parse(strip(fs.readFileSync(filename)));
 		return cli.loadConfig(filename);
 	} catch (e) {
 	}

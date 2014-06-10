@@ -18,6 +18,7 @@
     "jshint": "^2.4.4",
     "jshint-jsx": "^0.1.0",
     "lodash": "^2.4.1",
-    "shelljs": "^0.3.0"
+    "shelljs": "^0.3.0",
+    "strip-json-comments": "^0.1.3"
   }
 }
