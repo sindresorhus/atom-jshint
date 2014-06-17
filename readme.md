@@ -24,7 +24,7 @@ Or Settings ➔ Packages ➔ Search for `jshint` *(install `Jshint`, not `Atom J
 - First error is displayed in the statusbar.
 - Reads your `.jshintrc` config and `jshintConfig` in package.json using the same logic as JSHint.
 - Option to only validate on save.
-- Supports [React JSX](http://facebook.github.io/react/docs/jsx-in-depth.html).
+- Supports [React JSX](http://facebook.github.io/react/docs/jsx-in-depth.html). *(must be enabled in preferences)*
 
 
 ## License
