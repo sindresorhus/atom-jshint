@@ -9,7 +9,10 @@ var plugin = module.exports;
 Subscriber.extend(plugin);
 
 function updateStatusbar(error) {
-	atom.workspaceView.statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
+	if(atom.workspaceView.statusBar){
+		atom.workspaceView.statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
+	}
+	
 }
 
 function displayError(error, editor, editorView) {
@@ -49,6 +52,7 @@ function lint() {
 	// reset
 	editorView.resetDisplay();
 	editorView.gutter.find('.jshint-line-number').removeClass('jshint-line-number');
+	
 	if(atom.workspaceView.statusBar){
 		atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
 	}
