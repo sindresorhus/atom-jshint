@@ -49,7 +49,10 @@ function lint() {
 	// reset
 	editorView.resetDisplay();
 	editorView.gutter.find('.jshint-line-number').removeClass('jshint-line-number');
-	atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
+
+	if (atom.workspaceView.statusBar) {
+		atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
+	}
 
 	var linter = (atom.config.get('jshint.supportLintingJsx') || atom.config.get('jshint.transformJsx')) ? jsxhint : jshint;
 	linter(editor.getText(), config, config.globals);
