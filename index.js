@@ -39,7 +39,7 @@ function lint() {
 		return;
 	}
 
-	if (editor.getGrammar().name !== 'JavaScript') {
+	if (['JavaScript', 'JavaScript (JSX)'].indexOf(editor.getGrammar().name) === -1) {
 		return;
 	}
 
