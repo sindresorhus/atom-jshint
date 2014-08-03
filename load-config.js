@@ -3,6 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var shjs = require('shelljs');
 var cli = require('jshint/src/cli');
+var userHome = require('user-home');
 
 // from JSHint //
 // Storage for memoized results from find file
@@ -54,8 +55,7 @@ function findFile(name, dir) {
  */
 function findConfig(file) {
   var dir  = path.dirname(path.resolve(file));
-  var envs = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-  var home = path.normalize(path.join(envs, '.jshintrc'));
+  var home = path.normalize(path.join(userHome, '.jshintrc'));
 
   var proj = findFile('.jshintrc', dir);
   if (proj) {
