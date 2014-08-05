@@ -18,7 +18,7 @@ function getMarkersForEditor() {
 	return {};
 }
 
-function clearOldMarks(errors) {
+function clearOldMarkers(errors) {
 	var rows = _.map(errors, function(error) {
 		return getRowForError(error);
 	});
@@ -151,12 +151,12 @@ function lint() {
 }
 
 function displayErrors(errors) {
-	clearOldMarks(errors);
+	clearOldMarkers(errors);
 	updateStatusbar(_.first(errors));
 	_.each(errors, displayError);
 }
 
-function removeMarksForEditorId(id) {
+function removeMarkersForEditorId(id) {
 	if (markersByEditorId[id]) {
 		delete markersByEditorId[id];
 	}
@@ -183,7 +183,7 @@ function registerEvents() {
 	});
 
 	atom.workspaceView.on('editor:will-be-removed', function(evt, editorView) {
-		removeMarksForEditorId(editorView.editor.id);
+		removeMarkersForEditorId(editorView.editor.id);
 	});
 }
 
