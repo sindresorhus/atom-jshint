@@ -156,6 +156,12 @@ function displayErrors(errors) {
 	_.each(errors, displayError);
 }
 
+function removeMarksForEditorId(id) {
+	if (markersByEditorId[id]) {
+		delete markersByEditorId[id];
+	}
+}
+
 function registerEvents() {
 	lint();
 
@@ -174,6 +180,10 @@ function registerEvents() {
 		}
 
 		plugin.subscribe(buffer, events, _.debounce(lint, 50));
+	});
+
+	atom.workspaceView.on('editor:will-be-removed', function(evt, editorView) {
+		removeMarksForEditorId(editorView.editor.id);
 	});
 }
 
