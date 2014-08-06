@@ -4,12 +4,12 @@
 
 > Validate JavaScript with [JSHint](http://jshint.com)
 
-![](https://f.cloud.github.com/assets/170270/2307241/f0460f66-a2a3-11e3-9382-e8d27ceb0499.png)
+![](screenshot.png)
 
 
 ## Install
 
-```bash
+```sh
 $ apm install jshint
 ```
 
@@ -29,4 +29,4 @@ Or Settings ➔ Packages ➔ Search for `jshint` *(install `Jshint`, not `Atom J
 
 ## License
 
-[MIT](http://opensource.org/licenses/MIT) © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](http://sindresorhus.com)
