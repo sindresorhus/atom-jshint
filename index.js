@@ -94,11 +94,11 @@ function addReasons(marker, error) {
 	var row = getRowForError(error);
 	var editorView = atom.workspaceView.getActiveView();
 	var gutter = editorView.gutter;
-	var reasons = getReasonsForError(error).join('<br />');
+	var reasons = '<div class="jshint-errors">' + getReasonsForError(error).join('<br />') + '</div>';
 
 	var gutterRow = gutter.find(gutter.getLineNumberElement(row));
 	gutterRow.destroyTooltip();
-	gutterRow.setTooltip({title: reasons, placement: 'bottom'});
+	gutterRow.setTooltip({title: reasons, placement: 'bottom', delay: {show: 200}});
 	marker.on('changed destroyed', function() {
 		gutterRow.destroyTooltip();
 	});
