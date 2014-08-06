@@ -55,17 +55,6 @@ function getMarkerAtRow(row) {
 	return markersByEditorId[editor.id][row];
 }
 
-function markRow(row) {
-	var editor = atom.workspace.getActiveEditor();
-	if ( getMarkerAtRow(row) ) {
-		return;
-	}
-	var marker = editor.markBufferRange([[row, 0], [row, 1]]);
-	editor.decorateMarker(marker, {type: 'line', class: 'jshint-line'});
-	editor.decorateMarker(marker, {type: 'gutter', class: 'jshint-line-number'});
-	saveMarker(marker, row);
-}
-
 function updateStatusbar(error) {
 	if ( ! error ) {
 		return;
@@ -84,25 +73,39 @@ function getRowForError(error) {
 
 function displayError(error) {
 	var row = getRowForError(error);
-	markRow(row);
-	addReasons(error);
+	if ( getMarkerAtRow(row) ) {
+		return;
+	}
+	var editor = atom.workspace.getActiveEditor();
+	var marker = editor.markBufferRange([[row, 0], [row, 1]]);
+	editor.decorateMarker(marker, {type: 'line', class: 'jshint-line'});
+	editor.decorateMarker(marker, {type: 'gutter', class: 'jshint-line-number'});
+	saveMarker(marker, row);
+	addReasons(marker, error);
 }
 
-function addReasons(error) {
+function getReasonsForError(error) {
+	return _.map(error, function (el) {
+		return el.character + ': ' + el.reason;
+	});
+}
+
+function addReasons(marker, error) {
 	var row = getRowForError(error);
 	var editorView = atom.workspaceView.getActiveView();
 	var gutter = editorView.gutter;
-	var reasons = _.map(error, function (el) {
-		return el.character + ': ' + el.reason;
-	}).join('\n\n');
+	var reasons = getReasonsForError(error).join('<br />');
 
 	var gutterRow = gutter.find(gutter.getLineNumberElement(row));
-	gutterRow.attr('title', reasons);
+	gutterRow.destroyTooltip();
+	gutterRow.setTooltip({title: reasons, placement: 'bottom'});
+	marker.on('changed destroyed', function() {
+		gutterRow.destroyTooltip();
+	});
 }
 
 function lint() {
 	var editor = atom.workspace.getActiveEditor();
-	var editorView = atom.workspaceView.getActiveView();
 
 	if (!editor) {
 		return;
@@ -114,9 +117,6 @@ function lint() {
 
 	var file = editor.getUri();
 	var config = file ? loadConfig(file) : {};
-
-	// reset
-	editorView.gutter.find('.jshint-line-number').attr('title', '');
 
 	if (atom.workspaceView.statusBar) {
 		atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
