@@ -12,20 +12,22 @@ Subscriber.extend(plugin);
 
 function getMarkersForEditor() {
 	var editor = atom.workspace.getActiveEditor();
-	if ( editor && markersByEditorId[ editor.id ] ) {
-		return markersByEditorId[ editor.id ];
+
+	if (editor && markersByEditorId[editor.id]) {
+		return markersByEditorId[editor.id];
 	}
+
 	return {};
 }
 
 function clearOldMarkers(errors) {
-	var rows = _.map(errors, function(error) {
+	var rows = _.map(errors, function (error) {
 		return getRowForError(error);
 	});
 
 	var oldMarkers = getMarkersForEditor();
-	_.each(_.keys(oldMarkers), function(row) {
-		if ( ! _.contains(rows, row) ) {
+	_.each(_.keys(oldMarkers), function (row) {
+		if (!_.contains(rows, row)) {
 			destroyMarkerAtRow(row);
 		}
 	});
@@ -33,7 +35,7 @@ function clearOldMarkers(errors) {
 
 function destroyMarkerAtRow(row) {
 	var editor = atom.workspace.getActiveEditor();
-	if ( markersByEditorId[editor.id] && markersByEditorId[editor.id][row] ) {
+	if (markersByEditorId[editor.id] && markersByEditorId[editor.id][row]) {
 		markersByEditorId[editor.id][row].destroy();
 		delete markersByEditorId[editor.id][row];
 	}
@@ -41,25 +43,31 @@ function destroyMarkerAtRow(row) {
 
 function saveMarker(marker, row) {
 	var editor = atom.workspace.getActiveEditor();
-	if ( ! markersByEditorId[editor.id] ) {
+
+	if (!markersByEditorId[editor.id]) {
 		markersByEditorId[editor.id] = {};
 	}
+
 	markersByEditorId[editor.id][row] = marker;
 }
 
 function getMarkerAtRow(row) {
 	var editor = atom.workspace.getActiveEditor();
-	if ( ! markersByEditorId[editor.id] ) {
+
+	if (!markersByEditorId[editor.id]) {
 		return null;
 	}
+
 	return markersByEditorId[editor.id][row];
 }
 
 function updateStatusbar(error) {
-	if ( ! error ) {
+	if (!error) {
 		return;
 	}
+
 	error = error[0];
+
 	if (atom.workspaceView.statusBar) {
 		atom.workspaceView.statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
 	}
@@ -73,9 +81,11 @@ function getRowForError(error) {
 
 function displayError(error) {
 	var row = getRowForError(error);
-	if ( getMarkerAtRow(row) ) {
+
+	if (getMarkerAtRow(row)) {
 		return;
 	}
+
 	var editor = atom.workspace.getActiveEditor();
 	var marker = editor.markBufferRange([[row, 0], [row, 1]]);
 	editor.decorateMarker(marker, {type: 'line', class: 'jshint-line'});
@@ -95,11 +105,11 @@ function addReasons(marker, error) {
 	var editorView = atom.workspaceView.getActiveView();
 	var gutter = editorView.gutter;
 	var reasons = '<div class="jshint-errors">' + getReasonsForError(error).join('<br />') + '</div>';
-
 	var gutterRow = gutter.find(gutter.getLineNumberElement(row));
+
 	gutterRow.destroyTooltip();
 	gutterRow.setTooltip({title: reasons, placement: 'bottom', delay: {show: 200}});
-	marker.on('changed destroyed', function() {
+	marker.on('changed destroyed', function () {
 		gutterRow.destroyTooltip();
 	});
 }
@@ -182,7 +192,7 @@ function registerEvents() {
 		plugin.subscribe(buffer, events, _.debounce(lint, 50));
 	});
 
-	atom.workspaceView.on('editor:will-be-removed', function(evt, editorView) {
+	atom.workspaceView.on('editor:will-be-removed', function (e, editorView) {
 		removeMarkersForEditorId(editorView.editor.id);
 	});
 }
