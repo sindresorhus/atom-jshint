@@ -193,7 +193,9 @@ function registerEvents() {
 	});
 
 	atom.workspaceView.on('editor:will-be-removed', function (e, editorView) {
-		removeMarkersForEditorId(editorView.editor.id);
+		if (editorView && editorView.editor) {
+			removeMarkersForEditorId(editorView.editor.id);
+		}
 	});
 }
 
