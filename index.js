@@ -174,7 +174,6 @@ function removeMarkersForEditorId(id) {
 }
 
 function registerEvents() {
-
 	lint();
 
 	atom.workspace.eachEditor(function (editor) {
