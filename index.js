@@ -1,14 +1,10 @@
 'use strict';
-var _ = require('lodash');
-var Subscriber = require('emissary').Subscriber;
-var jshint = require('jshint').JSHINT;
-var jsxhint = require('jshint-jsx').JSXHINT;
-var loadConfig = require('./load-config');
 var plugin = module.exports;
-
 var markersByEditorId = {};
-
-Subscriber.extend(plugin);
+var _;
+var jshint;
+var jsxhint;
+var loadConfig;
 
 function getMarkersForEditor() {
 	var editor = atom.workspace.getActiveEditor();
@@ -115,6 +111,11 @@ function addReasons(marker, error) {
 }
 
 function lint() {
+	jshint = jshint || require('jshint').JSHINT;
+	jsxhint = jsxhint || require('jshint-jsx').JSXHINT;
+	loadConfig = loadConfig || require('./load-config');
+	_ = _ || require('lodash');
+
 	var editor = atom.workspace.getActiveEditor();
 
 	if (!editor) {
@@ -205,6 +206,8 @@ plugin.configDefaults = {
 };
 
 plugin.activate = function () {
+	var Subscriber = require('emissary').Subscriber;
+	Subscriber.extend(plugin);
 	registerEvents();
 	plugin.subscribe(atom.config.observe('jshint.validateOnlyOnSave', registerEvents));
 	atom.workspaceView.command('jshint:lint', lint);
