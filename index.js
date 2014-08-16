@@ -1,15 +1,17 @@
 'use strict';
-var _ = require('lodash');
-var Subscriber = require('emissary').Subscriber;
-var jshint = require('jshint').JSHINT;
-var jsxhint = require('jshint-jsx').JSXHINT;
-var loadConfig = require('./load-config');
+var emissary = require('emissary');
+var lazyReq = require('lazy-req')(require);
+var lodash = lazyReq('lodash');
+var jshint = lazyReq('jshint');
+var jsxhint = lazyReq('jshint-jsx');
+var loadConfig = lazyReq('./load-config');
 var plugin = module.exports;
+var _;
 
 var markersByEditorId = {};
 var errorsByEditorId = {};
 
-Subscriber.extend(plugin);
+emissary().Subscriber.extend(plugin);
 
 function getMarkersForEditor() {
 	var editor = atom.workspace.getActiveEditor();
@@ -135,9 +137,9 @@ function lint() {
 	}
 
 	var file = editor.getUri();
-	var config = file ? loadConfig(file) : {};
+	var config = file ? loadConfig()(file) : {};
 
-	var linter = (atom.config.get('jshint.supportLintingJsx') || atom.config.get('jshint.transformJsx')) ? jsxhint : jshint;
+	var linter = (atom.config.get('jshint.supportLintingJsx') || atom.config.get('jshint.transformJsx')) ? jsxhint().JSXHINT : jshint().JSHINT;
 	linter(editor.getText(), config, config.globals);
 
 	removeErrorsForEditorId(editor.id);
@@ -223,6 +225,7 @@ plugin.configDefaults = {
 };
 
 plugin.activate = function () {
+	_ = lodash();
 	registerEvents();
 	plugin.subscribe(atom.config.observe('jshint.validateOnlyOnSave', registerEvents));
 	atom.workspaceView.command('jshint:lint', lint);
