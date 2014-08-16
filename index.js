@@ -7,6 +7,7 @@ var loadConfig = require('./load-config');
 var plugin = module.exports;
 
 var markersByEditorId = {};
+var errorsByEditorId = {};
 
 Subscriber.extend(plugin);
 
@@ -61,14 +62,20 @@ function getMarkerAtRow(row) {
 	return markersByEditorId[editor.id][row];
 }
 
-function updateStatusbar(error) {
-	if (!error) {
-		return;
-	}
-
-	error = error[0];
-
+function updateStatusbar() {
 	if (atom.workspaceView.statusBar) {
+		var editor = atom.workspace.getActiveEditor();
+
+		atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
+
+		if (!editor || !errorsByEditorId[editor.id]) {
+			return;
+		}
+
+		var line = editor.getCursorBufferPosition().row+1;
+		var error = errorsByEditorId[editor.id][line] || _.first(_.compact(errorsByEditorId[editor.id]));
+		error = error[0];
+
 		atom.workspaceView.statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
 	}
 }
@@ -128,12 +135,10 @@ function lint() {
 	var file = editor.getUri();
 	var config = file ? loadConfig(file) : {};
 
-	if (atom.workspaceView.statusBar) {
-		atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
-	}
-
 	var linter = (atom.config.get('jshint.supportLintingJsx') || atom.config.get('jshint.transformJsx')) ? jsxhint : jshint;
 	linter(editor.getText(), config, config.globals);
+
+	removeErrorsForEditorId(editor.id);
 
 	// workaround the errors array sometimes containing `null`
 	var errors = _.compact(linter.errors);
@@ -154,6 +159,8 @@ function lint() {
 				ret[l] = [el];
 			}
 		});
+
+		errorsByEditorId[editor.id] = ret;
 		errors = _.compact(ret);
 	}
 
@@ -162,13 +169,19 @@ function lint() {
 
 function displayErrors(errors) {
 	clearOldMarkers(errors);
-	updateStatusbar(_.first(errors));
+	updateStatusbar();
 	_.each(errors, displayError);
 }
 
 function removeMarkersForEditorId(id) {
 	if (markersByEditorId[id]) {
 		delete markersByEditorId[id];
+	}
+}
+
+function removeErrorsForEditorId(id) {
+	if (errorsByEditorId[id]) {
+		delete errorsByEditorId[id];
 	}
 }
 
@@ -194,8 +207,13 @@ function registerEvents() {
 
 	atom.workspaceView.on('editor:will-be-removed', function (e, editorView) {
 		if (editorView && editorView.editor) {
+			removeErrorsForEditorId(editorView.editor.id);
 			removeMarkersForEditorId(editorView.editor.id);
 		}
+	});
+
+	atom.workspaceView.on('cursor:moved', function (e) {
+		updateStatusbar();
 	});
 }
 
