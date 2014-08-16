@@ -63,21 +63,23 @@ function getMarkerAtRow(row) {
 }
 
 function updateStatusbar() {
-	if (atom.workspaceView.statusBar) {
-		var editor = atom.workspace.getActiveEditor();
-
-		atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
-
-		if (!editor || !errorsByEditorId[editor.id]) {
-			return;
-		}
-
-		var line = editor.getCursorBufferPosition().row+1;
-		var error = errorsByEditorId[editor.id][line] || _.first(_.compact(errorsByEditorId[editor.id]));
-		error = error[0];
-
-		atom.workspaceView.statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
+	if (!atom.workspaceView.statusBar) {
+		return;
 	}
+
+	var editor = atom.workspace.getActiveEditor();
+
+	atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
+
+	if (!editor || !errorsByEditorId[editor.id]) {
+		return;
+	}
+
+	var line = editor.getCursorBufferPosition().row+1;
+	var error = errorsByEditorId[editor.id][line] || _.first(_.compact(errorsByEditorId[editor.id]));
+	error = error[0];
+
+	atom.workspaceView.statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
 }
 
 function getRowForError(error) {
@@ -212,9 +214,7 @@ function registerEvents() {
 		}
 	});
 
-	atom.workspaceView.on('cursor:moved', function (e) {
-		updateStatusbar();
-	});
+	atom.workspaceView.on('cursor:moved', updateStatusbar);
 }
 
 plugin.configDefaults = {

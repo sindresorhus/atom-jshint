@@ -21,7 +21,7 @@ Or Settings ➔ Packages ➔ Search for `jshint` *(install `Jshint`, not `Atom J
 - Validates in realtime.
 - Line and line number turns red on error.
 - Hover over the line number to see the errors.
-- First error is displayed in the statusbar.
+- Displays the error from the current line or the first error in the statusbar.
 - Reads your `.jshintrc` config and `jshintConfig` in package.json using the same logic as JSHint.
 - Option to only validate on save.
 - Command `Jshint: Lint` to manually lint.
