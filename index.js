@@ -11,7 +11,7 @@ var _;
 var markersByEditorId = {};
 var errorsByEditorId = {};
 
-emissary().Subscriber.extend(plugin);
+emissary.Subscriber.extend(plugin);
 
 function getMarkersForEditor() {
 	var editor = atom.workspace.getActiveEditor();
