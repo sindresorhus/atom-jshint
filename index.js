@@ -23,6 +23,16 @@ function getMarkersForEditor() {
 	return {};
 }
 
+function getErrorsForEditor() {
+	var editor = atom.workspace.getActiveEditor();
+
+	if (editor && errorsByEditorId[editor.id]) {
+		return errorsByEditorId[editor.id];
+	}
+
+	return [];
+}
+
 function clearOldMarkers(errors) {
 	var rows = _.map(errors, function (error) {
 		return getRowForError(error);
@@ -165,13 +175,13 @@ function lint() {
 		});
 
 		errorsByEditorId[editor.id] = ret;
-		errors = _.compact(ret);
 	}
 
-	displayErrors(errors);
+	displayErrors();
 }
 
-function displayErrors(errors) {
+function displayErrors() {
+	var errors = _.compact(getErrorsForEditor());
 	clearOldMarkers(errors);
 	updateStatusbar();
 	_.each(errors, displayError);
@@ -201,10 +211,9 @@ function registerEvents() {
 
 		if (atom.config.get('jshint.validateOnlyOnSave')) {
 			events = 'saved';
-		} else {
-			// TODO: find a less noisy event for this
-			editor.on('scroll-top-changed', _.debounce(lint, 200));
 		}
+
+		editor.on('scroll-top-changed', _.debounce(displayErrors, 200));
 
 		plugin.subscribe(buffer, events, _.debounce(lint, 50));
 	});
