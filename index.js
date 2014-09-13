@@ -4,11 +4,10 @@ var lazyReq = require('lazy-req')(require);
 var lodash = lazyReq('lodash');
 var jshint = lazyReq('jshint');
 var jsxhint = lazyReq('jshint-jsx');
+var reactDomPragma = require('react-dom-pragma');
 var loadConfig = lazyReq('./load-config');
 var plugin = module.exports;
 var _;
-
-var JSX_PRAGMA = '/** @jsx React.DOM */';
 var markersByEditorId = {};
 var errorsByEditorId = {};
 
@@ -143,7 +142,7 @@ function lint() {
 		return;
 	}
 
-	if (['JavaScript', 'JavaScript (JSX)'].indexOf(editor.getGrammar().name) === -1) {
+	if (['source.js', 'source.jsx'].indexOf(editor.getGrammar().scopeName) === -1) {
 		return;
 	}
 
@@ -152,11 +151,9 @@ function lint() {
 
 	var linter = (atom.config.get('jshint.supportLintingJsx') || atom.config.get('jshint.transformJsx')) ? jsxhint().JSXHINT : jshint().JSHINT;
 
-	var code = editor.getText();
-	var isJSXWithoutPragma = (editor.getGrammar().name === 'JavaScript (JSX)') && !code.trim().startsWith(JSX_PRAGMA);
-	if (isJSXWithoutPragma) {
-		code = JSX_PRAGMA + '\n' + code;
-	}
+	var origCode = editor.getText();
+	var code = editor.getGrammar().scopeName === 'source.jsx' ? reactDomPragma(origCode) : origCode;
+	var pragmaWasAdded = code !== origCode;
 
 	linter(code, config, config.globals);
 
@@ -169,9 +166,10 @@ function lint() {
 		// aggregate same-line errors
 		var ret = [];
 		_.each(errors, function (el) {
-			if (isJSXWithoutPragma) {
-				el.line = el.line - 1;
+			if (pragmaWasAdded) {
+				el.line--;
 			}
+
 			var l = el.line;
 
 			if (Array.isArray(ret[l])) {
