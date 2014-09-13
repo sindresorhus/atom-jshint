@@ -8,6 +8,7 @@ var loadConfig = lazyReq('./load-config');
 var plugin = module.exports;
 var _;
 
+var JSX_PRAGMA = '/** @jsx React.DOM */';
 var markersByEditorId = {};
 var errorsByEditorId = {};
 
@@ -150,7 +151,14 @@ function lint() {
 	var config = file ? loadConfig()(file) : {};
 
 	var linter = (atom.config.get('jshint.supportLintingJsx') || atom.config.get('jshint.transformJsx')) ? jsxhint().JSXHINT : jshint().JSHINT;
-	linter(editor.getText(), config, config.globals);
+
+	var code = editor.getText();
+	var isJSXWithoutPragma = (editor.getGrammar().name === 'JavaScript (JSX)') && !code.trim().startsWith(JSX_PRAGMA);
+	if (isJSXWithoutPragma) {
+		code = JSX_PRAGMA + '\n' + code;
+	}
+
+	linter(code, config, config.globals);
 
 	removeErrorsForEditorId(editor.id);
 
@@ -161,6 +169,9 @@ function lint() {
 		// aggregate same-line errors
 		var ret = [];
 		_.each(errors, function (el) {
+			if (isJSXWithoutPragma) {
+				el.line = el.line - 1;
+			}
 			var l = el.line;
 
 			if (Array.isArray(ret[l])) {
