@@ -13,6 +13,8 @@ var errorsByEditorId = {};
 
 emissary.Subscriber.extend(plugin);
 
+var SUPPORTED_GRAMMARS = ['source.js', 'source.jsx', 'source.js.jsx'];
+
 function getMarkersForEditor() {
 	var editor = atom.workspace.getActiveEditor();
 
@@ -142,7 +144,7 @@ function lint() {
 		return;
 	}
 
-	if (['source.js', 'source.jsx'].indexOf(editor.getGrammar().scopeName) === -1) {
+	if (SUPPORTED_GRAMMARS.indexOf(editor.getGrammar().scopeName) === -1) {
 		return;
 	}
 
