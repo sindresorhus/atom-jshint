@@ -13,7 +13,11 @@ var errorsByEditorId = {};
 
 emissary.Subscriber.extend(plugin);
 
-var SUPPORTED_GRAMMARS = ['source.js', 'source.jsx', 'source.js.jsx'];
+var SUPPORTED_GRAMMARS = [
+	'source.js',
+	'source.jsx',
+	'source.js.jsx'
+];
 
 function getMarkersForEditor() {
 	var editor = atom.workspace.getActiveEditor();
@@ -239,9 +243,16 @@ function registerEvents() {
 	atom.workspaceView.on('cursor:moved', updateStatusbar);
 }
 
-plugin.configDefaults = {
-	validateOnlyOnSave: false,
-	supportLintingJsx: false
+plugin.config = {
+	validateOnlyOnSave: {
+		type: 'boolean',
+		default: false
+	},
+	supportLintingJsx: {
+		type: 'boolean',
+		default: false,
+		title: 'Support Linting JSX'
+	}
 };
 
 plugin.activate = function () {
