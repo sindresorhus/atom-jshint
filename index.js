@@ -161,7 +161,9 @@ function lint() {
 	var code = editor.getGrammar().scopeName === 'source.jsx' ? reactDomPragma(origCode) : origCode;
 	var pragmaWasAdded = code !== origCode;
 
-	linter(code, config, config.globals);
+	try {
+		linter(code, config, config.globals);
+	} catch (err) {}
 
 	removeErrorsForEditorId(editor.id);
 
