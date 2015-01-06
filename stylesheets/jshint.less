@@ -1,14 +1,14 @@
 @import 'ui-variables';
 
-.jshint-line {
-	background-color: fade(@background-color-error, 20%);
-}
+atom-text-editor::shadow {
+	.jshint-line {
+		background-color: fade(@background-color-error, 20%);
+	}
 
-.jshint-errors {
-	text-align: left;
-}
+	.jshint-errors {
+		text-align: left;
+	}
 
-.editor {
 	.gutter {
 		.jshint-line-number {
 			color: @text-color-error !important;
