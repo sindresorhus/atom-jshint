@@ -156,8 +156,12 @@ function lint() {
 
 	var file = editor.getUri();
 
+	// Hack to make JSHint look for .jshintignore in the correct dir
+	// Because JSHint doesn't use its `cwd` option
+	process.chdir(path.dirname(file));
+
 	// Remove errors and don't lint if file is ignored in .jshintignore
-	if (file && cli().gather({args: [file], cwd: path.dirname(file)}).length === 0) {
+	if (file && cli().gather({args: [file]}).length === 0) {
 		removeErrorsForEditorId(editor.id);
 		displayErrors();
 		removeMarkersForEditorId(editor.id);
