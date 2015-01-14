@@ -4,6 +4,8 @@ var lazyReq = require('lazy-req')(require);
 var lodash = lazyReq('lodash');
 var jshint = lazyReq('jshint');
 var jsxhint = lazyReq('jshint-jsx');
+var path = require('path');
+var cli = lazyReq('jshint/src/cli');
 var reactDomPragma = require('react-dom-pragma');
 var loadConfig = lazyReq('./load-config');
 var plugin = module.exports;
@@ -153,6 +155,15 @@ function lint() {
 	}
 
 	var file = editor.getUri();
+
+	// Remove errors and don't lint if file is ignored in .jshintignore
+	if (file && cli().gather({args: [file], cwd: path.dirname(file)}).length === 0) {
+		removeErrorsForEditorId(editor.id);
+		displayErrors();
+		removeMarkersForEditorId(editor.id);
+		return;
+	}
+
 	var config = file ? loadConfig()(file) : {};
 
 	var linter = (atom.config.get('jshint.supportLintingJsx') || atom.config.get('jshint.transformJsx')) ? jsxhint().JSXHINT : jshint().JSHINT;
