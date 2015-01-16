@@ -16,7 +16,7 @@
   "dependencies": {
     "emissary": "^1.0.0",
     "jshint": "^2.4.4",
-    "jshint-jsx": "^0.3.0",
+    "jshint-jsx": "^0.4.0",
     "lazy-req": "^1.0.0",
     "lodash": "^2.4.1",
     "react-dom-pragma": "^1.0.0",
