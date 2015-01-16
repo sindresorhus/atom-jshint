@@ -22,7 +22,7 @@ var SUPPORTED_GRAMMARS = [
 ];
 
 function getMarkersForEditor() {
-	var editor = atom.workspace.getActiveEditor();
+	var editor = atom.workspace.getActiveTextEditor();
 
 	if (editor && markersByEditorId[editor.id]) {
 		return markersByEditorId[editor.id];
@@ -32,7 +32,7 @@ function getMarkersForEditor() {
 }
 
 function getErrorsForEditor() {
-	var editor = atom.workspace.getActiveEditor();
+	var editor = atom.workspace.getActiveTextEditor();
 
 	if (editor && errorsByEditorId[editor.id]) {
 		return errorsByEditorId[editor.id];
@@ -55,7 +55,7 @@ function clearOldMarkers(errors) {
 }
 
 function destroyMarkerAtRow(row) {
-	var editor = atom.workspace.getActiveEditor();
+	var editor = atom.workspace.getActiveTextEditor();
 	if (markersByEditorId[editor.id] && markersByEditorId[editor.id][row]) {
 		markersByEditorId[editor.id][row].destroy();
 		delete markersByEditorId[editor.id][row];
@@ -63,7 +63,7 @@ function destroyMarkerAtRow(row) {
 }
 
 function saveMarker(marker, row) {
-	var editor = atom.workspace.getActiveEditor();
+	var editor = atom.workspace.getActiveTextEditor();
 
 	if (!markersByEditorId[editor.id]) {
 		markersByEditorId[editor.id] = {};
@@ -73,7 +73,7 @@ function saveMarker(marker, row) {
 }
 
 function getMarkerAtRow(row) {
-	var editor = atom.workspace.getActiveEditor();
+	var editor = atom.workspace.getActiveTextEditor();
 
 	if (!markersByEditorId[editor.id]) {
 		return null;
@@ -87,7 +87,7 @@ function updateStatusbar() {
 		return;
 	}
 
-	var editor = atom.workspace.getActiveEditor();
+	var editor = atom.workspace.getActiveTextEditor();
 
 	atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
 
@@ -115,7 +115,7 @@ function displayError(error) {
 		return;
 	}
 
-	var editor = atom.workspace.getActiveEditor();
+	var editor = atom.workspace.getActiveTextEditor();
 	var marker = editor.markBufferRange([[row, 0], [row, 1]]);
 	editor.decorateMarker(marker, {type: 'line', class: 'jshint-line'});
 	editor.decorateMarker(marker, {type: 'gutter', class: 'jshint-line-number'});
@@ -144,7 +144,7 @@ function addReasons(marker, error) {
 }
 
 function lint() {
-	var editor = atom.workspace.getActiveEditor();
+	var editor = atom.workspace.getActiveTextEditor();
 
 	if (!editor) {
 		return;
@@ -276,5 +276,5 @@ plugin.activate = function () {
 	_ = lodash();
 	registerEvents();
 	plugin.subscribe(atom.config.observe('jshint.validateOnlyOnSave', registerEvents));
-	atom.workspaceView.command('jshint:lint', lint);
+	atom.commands.add('atom-workspace', 'jshint:lint', lint);
 };
