@@ -1,5 +1,7 @@
 # JSHint
 
+**Because of continuous user laziness you've lost the right to the issue tracker.**
+
 [Atom package](https://atom.io/packages/jshint)
 
 > Validate JavaScript with [JSHint](http://jshint.com)
@@ -9,7 +11,7 @@
 
 ## Install
 
-```sh
+```
 $ apm install jshint
 ```
 
