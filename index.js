@@ -83,13 +83,13 @@ function getMarkerAtRow(row) {
 }
 
 function updateStatusbar() {
-	if (!atom.workspaceView.statusBar) {
+	if (!atom.views.getView(atom.workspace).statusBar) {
 		return;
 	}
 
 	var editor = atom.workspace.getActiveTextEditor();
 
-	atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
+	atom.views.getView(atom.workspace).statusBar.find('#jshint-statusbar').remove();
 
 	if (!editor || !errorsByEditorId[editor.id]) {
 		return;
@@ -99,7 +99,7 @@ function updateStatusbar() {
 	var error = errorsByEditorId[editor.id][line] || _.first(_.compact(errorsByEditorId[editor.id]));
 	error = error[0];
 
-	atom.workspaceView.statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
+	atom.views.getView(atom.workspace).statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
 }
 
 function getRowForError(error) {
@@ -131,7 +131,7 @@ function getReasonsForError(error) {
 
 function addReasons(marker, error) {
 	var row = getRowForError(error);
-	var editorView = atom.workspaceView.getActiveView();
+	var editorView = atom.views.getView(atom.workspace).getActiveView();
 	var gutter = editorView.gutter;
 	var reasons = '<div class="jshint-errors">' + getReasonsForError(error).join('<br />') + '</div>';
 	var gutterRow = gutter.find(gutter.getLineNumberElement(row));
@@ -250,14 +250,14 @@ function registerEvents() {
 		plugin.subscribe(buffer, events, _.debounce(lint, 50));
 	});
 
-	atom.workspaceView.on('editor:will-be-removed', function (e, editorView) {
+	atom.views.getView(atom.workspace).on('editor:will-be-removed', function (e, editorView) {
 		if (editorView && editorView.editor) {
 			removeErrorsForEditorId(editorView.editor.id);
 			removeMarkersForEditorId(editorView.editor.id);
 		}
 	});
 
-	atom.workspaceView.on('cursor:moved', updateStatusbar);
+	atom.views.getView(atom.workspace).on('cursor:moved', updateStatusbar);
 }
 
 plugin.config = {
