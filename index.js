@@ -1,4 +1,5 @@
 'use strict';
+var CompositeDisposable = require('atom').CompositeDisposable;
 var emissary = require('emissary');
 var lazyReq = require('lazy-req')(require);
 var lodash = lazyReq('lodash');
@@ -12,6 +13,7 @@ var plugin = module.exports;
 var _;
 var markersByEditorId = {};
 var errorsByEditorId = {};
+var subscriptionTooltips = new CompositeDisposable();
 
 emissary.Subscriber.extend(plugin);
 
@@ -42,6 +44,8 @@ function getErrorsForEditor() {
 }
 
 function clearOldMarkers(errors) {
+	subscriptionTooltips.dispose();
+
 	var rows = _.map(errors, function (error) {
 		return getRowForError(error);
 	});
@@ -134,16 +138,16 @@ function getReasonsForError(error) {
 
 function addReasons(marker, error) {
 	var row = getRowForError(error);
-	var editorView = atom.workspaceView.getActiveView();
-	var gutter = editorView.gutter;
+	var editorElement = atom.views.getView(atom.workspace.getActiveTextEditor());
 	var reasons = '<div class="jshint-errors">' + getReasonsForError(error).join('<br />') + '</div>';
-	var gutterRow = gutter.find(gutter.getLineNumberElement(row));
 
-	gutterRow.destroyTooltip();
-	gutterRow.setTooltip({title: reasons, placement: 'bottom', delay: {show: 200}});
-	marker.on('changed destroyed', function () {
-		gutterRow.destroyTooltip();
+	var target = editorElement.shadowRoot.querySelectorAll('.jshint-line-number.line-number-' + row);
+	var tooltip = atom.tooltips.add(target, {
+		title: reasons,
+		placement: 'bottom',
+		delay: { show: 200 }
 	});
+	subscriptionTooltips.add(tooltip);
 }
 
 function lint() {
