@@ -83,14 +83,17 @@ function getMarkerAtRow(row) {
 }
 
 function updateStatusbar() {
-	if (!atom.workspaceView.statusBar) {
+	var statusBar = atom.views.getView(atom.workspace).querySelector('.status-bar');
+	if (!statusBar) {
 		return;
 	}
 
+	var jsHintStatusBar = statusBar.querySelector('#jshint-statusbar');
+	if (jsHintStatusBar && jsHintStatusBar.parentNode) {
+		jsHintStatusBar.parentNode.removeChild(jsHintStatusBar);
+	}
+
 	var editor = atom.workspace.getActiveTextEditor();
-
-	atom.workspaceView.statusBar.find('#jshint-statusbar').remove();
-
 	if (!editor || !errorsByEditorId[editor.id]) {
 		return;
 	}
@@ -99,7 +102,7 @@ function updateStatusbar() {
 	var error = errorsByEditorId[editor.id][line] || _.first(_.compact(errorsByEditorId[editor.id]));
 	error = error[0];
 
-	atom.workspaceView.statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
+	statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
 }
 
 function getRowForError(error) {
@@ -233,6 +236,7 @@ function removeErrorsForEditorId(id) {
 
 function registerEvents() {
 	lint();
+	var workspaceElement = atom.views.getView(atom.workspace);
 
 	atom.workspace.eachEditor(function (editor) {
 		var buffer = editor.getBuffer();
@@ -250,14 +254,14 @@ function registerEvents() {
 		plugin.subscribe(buffer, events, _.debounce(lint, 50));
 	});
 
-	atom.workspaceView.on('editor:will-be-removed', function (e, editorView) {
+	workspaceElement.addEventListener('editor:will-be-removed', function (e, editorView) {
 		if (editorView && editorView.editor) {
 			removeErrorsForEditorId(editorView.editor.id);
 			removeMarkersForEditorId(editorView.editor.id);
 		}
 	});
 
-	atom.workspaceView.on('cursor:moved', updateStatusbar);
+	workspaceElement.addEventListener('cursor:moved', updateStatusbar);
 }
 
 plugin.config = {
