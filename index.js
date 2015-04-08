@@ -28,13 +28,7 @@ jsHintStatusBar.setAttribute('id', 'jshint-statusbar');
 jsHintStatusBar.classList.add('inline-block');
 
 function updateStatusText(line, character, reason) {
-
-	if (!line && !character && !reason) {
-		jsHintStatusBar.innerText = '';
-	}
-	else {
-		jsHintStatusBar.innerText = 'JSHint ' + line + ':' + character + ' ' + reason;
-	}
+	jsHintStatusBar.textContent = line && character && reason ? 'JSHint ' + line + ':' + character + ' ' + reason : '';
 }
 
 function getMarkersForEditor() {
@@ -107,7 +101,7 @@ function updateStatusbar() {
 	}
 
 	if (!jsHintStatusBar.parentNode) {
-		statusBar.addLeftTile({ item: jsHintStatusBar });
+		statusBar.addLeftTile({item: jsHintStatusBar});
 	}
 
 	var editor = atom.workspace.getActiveTextEditor();
@@ -116,7 +110,7 @@ function updateStatusbar() {
 		return;
 	}
 
-	var line = editor.getCursorBufferPosition().row+1;
+	var line = editor.getCursorBufferPosition().row + 1;
 	var error = errorsByEditorId[editor.id][line] || _.first(_.compact(errorsByEditorId[editor.id]));
 	error = error[0];
 
@@ -153,7 +147,7 @@ function getReasonsForError(error) {
 function addReasons(marker, error) {
 	var row = getRowForError(error);
 	var editorElement = atom.views.getView(atom.workspace.getActiveTextEditor());
-	var reasons = '<div class="jshint-errors">' + getReasonsForError(error).join('<br />') + '</div>';
+	var reasons = '<div class="jshint-errors">' + getReasonsForError(error).join('<br>') + '</div>';
 
 	var target = editorElement.shadowRoot.querySelectorAll('.jshint-line-number.line-number-' + row);
 	var tooltip = atom.tooltips.add(target, {
