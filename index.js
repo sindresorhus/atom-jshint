@@ -1,3 +1,4 @@
+/* globals atom */
 'use strict';
 var CompositeDisposable = require('atom').CompositeDisposable;
 var emissary = require('emissary');
