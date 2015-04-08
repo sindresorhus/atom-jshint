@@ -242,7 +242,7 @@ function registerEvents() {
 	lint();
 	var workspaceElement = atom.views.getView(atom.workspace);
 
-	atom.workspace.eachEditor(function (editor) {
+	atom.workspace.observeTextEditors(function (editor) {
 		var buffer = editor.getBuffer();
 		var events = 'saved contents-modified';
 
@@ -253,7 +253,7 @@ function registerEvents() {
 			events = 'saved';
 		}
 
-		editor.on('scroll-top-changed', _.debounce(displayErrors, 200));
+		editor.onDidChangeScrollTop(_.debounce(displayErrors, 200));
 
 		plugin.subscribe(buffer, events, _.debounce(lint, 50));
 	});
