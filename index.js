@@ -23,6 +23,20 @@ var SUPPORTED_GRAMMARS = [
 	'source.js.jsx'
 ];
 
+var jsHintStatusBar = document.createElement('span');
+jsHintStatusBar.setAttribute('id', 'jshint-statusbar');
+jsHintStatusBar.classList.add('inline-block');
+
+function updateStatusText(line, character, reason) {
+
+	if (!line && !character && !reason) {
+		jsHintStatusBar.innerText = '';
+	}
+	else {
+		jsHintStatusBar.innerText = 'JSHint ' + line + ':' + character + ' ' + reason;
+	}
+}
+
 function getMarkersForEditor() {
 	var editor = atom.workspace.getActiveTextEditor();
 
@@ -92,13 +106,13 @@ function updateStatusbar() {
 		return;
 	}
 
-	var jsHintStatusBar = statusBar.querySelector('#jshint-statusbar');
-	if (jsHintStatusBar && jsHintStatusBar.parentNode) {
-		jsHintStatusBar.parentNode.removeChild(jsHintStatusBar);
+	if (!jsHintStatusBar.parentNode) {
+		statusBar.addLeftTile({ item: jsHintStatusBar });
 	}
 
 	var editor = atom.workspace.getActiveTextEditor();
 	if (!editor || !errorsByEditorId[editor.id]) {
+		updateStatusText();
 		return;
 	}
 
@@ -106,7 +120,7 @@ function updateStatusbar() {
 	var error = errorsByEditorId[editor.id][line] || _.first(_.compact(errorsByEditorId[editor.id]));
 	error = error[0];
 
-	statusBar.appendLeft('<span id="jshint-statusbar" class="inline-block">JSHint ' + error.line + ':' + error.character + ' ' + error.reason + '</span>');
+	updateStatusText(error.line, error.character, error.reason);
 }
 
 function getRowForError(error) {
