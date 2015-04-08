@@ -125,7 +125,7 @@ function displayError(error) {
 	var editor = atom.workspace.getActiveTextEditor();
 	var marker = editor.markBufferRange([[row, 0], [row, 1]]);
 	editor.decorateMarker(marker, {type: 'line', class: 'jshint-line'});
-	editor.decorateMarker(marker, {type: 'gutter', class: 'jshint-line-number'});
+	editor.decorateMarker(marker, {type: 'line-number', class: 'jshint-line-number'});
 	saveMarker(marker, row);
 	addReasons(marker, error);
 }
@@ -161,7 +161,7 @@ function lint() {
 		return;
 	}
 
-	var file = editor.getUri();
+	var file = editor.getURI();
 
 	// Hack to make JSHint look for .jshintignore in the correct dir
 	// Because JSHint doesn't use its `cwd` option
