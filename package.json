@@ -13,6 +13,12 @@
   "engines": {
     "atom": ">=0.190.0"
   },
+  "keywords": [
+    "lint",
+    "javascript",
+    "validate",
+    "jshint"
+  ],
   "dependencies": {
     "emissary": "^1.0.0",
     "jshint": "^2.4.4",
