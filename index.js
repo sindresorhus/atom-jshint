@@ -1,3 +1,4 @@
+/* globals atom */
 'use strict';
 var CompositeDisposable = require('atom').CompositeDisposable;
 var emissary = require('emissary');
@@ -227,12 +228,16 @@ function lint() {
 	displayErrors();
 }
 
+var debouncedLint = null;
+
 function displayErrors() {
 	var errors = _.compact(getErrorsForEditor());
 	clearOldMarkers(errors);
 	updateStatusbar();
 	_.each(errors, displayError);
 }
+
+var debouncedDisplayErrors = null;
 
 function removeMarkersForEditorId(id) {
 	if (markersByEditorId[id]) {
@@ -252,18 +257,18 @@ function registerEvents() {
 
 	atom.workspace.observeTextEditors(function (editor) {
 		var buffer = editor.getBuffer();
-		var events = 'saved contents-modified';
+		debouncedLint = debouncedLint || _.debounce(lint, 50);
+		debouncedDisplayErrors = debouncedDisplayErrors || _.debounce(displayErrors, 200);
 
-		editor.off('scroll-top-changed');
-		plugin.unsubscribe(buffer);
+		editor.off('scroll-top-changed', debouncedDisplayErrors);
+		buffer.off('did-save did-change-modified', debouncedLint);
 
-		if (atom.config.get('jshint.validateOnlyOnSave')) {
-			events = 'saved';
+		if (!atom.config.get('jshint.validateOnlyOnSave')) {
+			buffer.onDidChangeModified(debouncedLint);
 		}
+		buffer.onDidSave(debouncedLint);
 
-		editor.onDidChangeScrollTop(_.debounce(displayErrors, 200));
-
-		plugin.subscribe(buffer, events, _.debounce(lint, 50));
+		editor.onDidChangeScrollTop(debouncedDisplayErrors);
 	});
 
 	workspaceElement.addEventListener('editor:will-be-removed', function (e, editorView) {
