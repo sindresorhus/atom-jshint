@@ -1,6 +1,6 @@
 {
   "name": "jshint",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "Validate JavaScript with JSHint. In realtime or on save. Supports JSX (React).",
   "license": "MIT",
   "repository": "sindresorhus/atom-jshint",
