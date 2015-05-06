@@ -260,12 +260,13 @@ function registerEvents() {
 		debouncedLint = debouncedLint || _.debounce(lint, 50);
 		debouncedDisplayErrors = debouncedDisplayErrors || _.debounce(displayErrors, 200);
 
-		editor.off('scroll-top-changed', debouncedDisplayErrors);
-		buffer.off('did-save did-change-modified', debouncedLint);
+		editor.emitter.off('scroll-top-changed', debouncedDisplayErrors);
+		buffer.emitter.off('did-save did-change-modified', debouncedLint);
 
 		if (!atom.config.get('jshint.validateOnlyOnSave')) {
 			buffer.onDidChangeModified(debouncedLint);
 		}
+
 		buffer.onDidSave(debouncedLint);
 
 		editor.onDidChangeScrollTop(debouncedDisplayErrors);
