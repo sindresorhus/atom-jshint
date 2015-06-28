@@ -1,7 +1,5 @@
 # JSHint
 
-[Atom package](https://atom.io/packages/jshint)
-
 > Validate JavaScript with [JSHint](http://jshint.com)
 
 ![](https://cloud.githubusercontent.com/assets/170270/3834266/54ad6b1c-1daf-11e4-9c46-98e6e4abab07.png)
@@ -13,7 +11,7 @@
 $ apm install jshint
 ```
 
-Or Settings → Packages → Search for `jshint` *(install `Jshint`, not `Atom Jshint`)*
+Or Settings → Install → Search for `jshint` *(install `Jshint`, not `Atom Jshint`)*
 
 
 ## Features
@@ -25,7 +23,7 @@ Or Settings → Packages → Search for `jshint` *(install `Jshint`, not `Atom J
 - Reads your `.jshintrc` config and `jshintConfig` in package.json using the same logic as JSHint.
 - Option to only validate on save.
 - Command `Jshint: Lint` to manually lint.
-- Supports [React JSX](http://facebook.github.io/react/docs/jsx-in-depth.html). *(must be enabled in preferences)*
+- Supports [React JSX](http://facebook.github.io/react/docs/jsx-in-depth.html). *(must be enabled in Settings)*
 
 
 ## License

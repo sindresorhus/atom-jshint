@@ -154,7 +154,7 @@ function addReasons(marker, error) {
 	var tooltip = atom.tooltips.add(target, {
 		title: reasons,
 		placement: 'bottom',
-		delay: { show: 200 }
+		delay: {show: 200}
 	});
 	subscriptionTooltips.add(tooltip);
 }
