@@ -10,5 +10,5 @@
 	"noarg": true,
 	"undef": true,
 	"unused": "vars",
-	"strict": true
+	"esnext": true
 }
