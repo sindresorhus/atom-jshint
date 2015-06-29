@@ -10,7 +10,7 @@ import userHome from 'user-home';
 // Storage for memoized results from find file
 // Should prevent lots of directory traversal &
 // lookups when liniting an entire project
-let findFileResults = {};
+const findFileResults = {};
 
 /**
  * Searches for a file with a specified name starting with

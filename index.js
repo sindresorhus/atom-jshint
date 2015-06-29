@@ -5,18 +5,19 @@ import { CompositeDisposable } from 'atom';
 import emissary from 'emissary';
 import path from 'path';
 import reactDomPragma from 'react-dom-pragma';
+import lazyRequire from 'lazy-req';
 
-const lazyReq = require('lazy-req')(require);
+const lazyReq = lazyRequire(require);
 const lodash = lazyReq('lodash');
 const jshint = lazyReq('jshint');
 const jsxhint = lazyReq('jshint-jsx');
 const cli = lazyReq('jshint/src/cli');
 const loadConfig = lazyReq('./load-config');
-let plugin = {};
-let _;
-let markersByEditorId = {};
-let errorsByEditorId = {};
+const plugin = {};
+const markersByEditorId = {};
+const errorsByEditorId = {};
 const subscriptionTooltips = new CompositeDisposable();
+let _;
 
 emissary.Subscriber.extend(plugin);
 
@@ -222,7 +223,7 @@ const lint = () => {
 
 	if (errors.length > 0) {
 		// aggregate same-line errors
-		let ret = [];
+		const ret = [];
 		_.each(errors, el => {
 			if (pragmaWasAdded) {
 				el.line--;
