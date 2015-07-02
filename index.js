@@ -129,10 +129,11 @@ const getReasonsForError = error => {
 	return _.map(error, el => `${el.character}: ${el.reason}`);
 };
 
+
 const addReasons = (marker, error) => {
 	const row = getRowForError(error);
 	const editorElement = atom.views.getView(atom.workspace.getActiveTextEditor());
-	const reasons = '<div class="jshint-errors">' + getReasonsForError(error).join('<br>') + '</div>';
+	const reasons = `<div class="jshint-errors">${getReasonsForError(error).join('<br>')}</div>`;
 
 	const target = editorElement.shadowRoot.querySelectorAll('.jshint-line-number.line-number-' + row);
 	const tooltip = atom.tooltips.add(target, {
@@ -164,8 +165,6 @@ const displayErrors = () => {
 	updateStatusbar();
 	_.each(errors, displayError);
 };
-
-let debouncedDisplayErrors = null;
 
 const removeMarkersForEditorId = id => {
 	if (markersByEditorId[id]) {
@@ -209,7 +208,9 @@ const lint = () => {
 	const linter = (atom.config.get('jshint.supportLintingJsx') || atom.config.get('jshint.transformJsx')) ? jsxhint().JSXHINT : jshint().JSHINT;
 
 	const origCode = editor.getText();
-	const code = editor.getGrammar().scopeName === 'source.jsx' ? reactDomPragma(origCode) : origCode;
+	const grammarScope = editor.getGrammar().scopeName;
+	const isJsx = grammarScope === 'source.jsx' || grammarScope === 'source.js.jsx';
+	const code = isJsx ? reactDomPragma(origCode) : origCode;
 	const pragmaWasAdded = code !== origCode;
 
 	try {
@@ -247,17 +248,22 @@ const lint = () => {
 };
 
 let debouncedLint = null;
+let debouncedDisplayErrors = null;
+let debouncedUpdateStatusbar = null;
 
 const registerEvents = () => {
 	lint();
 	const workspaceElement = atom.views.getView(atom.workspace);
 
+	debouncedLint = debouncedLint || _.debounce(lint, 50);
+	debouncedDisplayErrors = debouncedDisplayErrors || _.debounce(displayErrors, 200);
+	debouncedUpdateStatusbar = debouncedUpdateStatusbar || _.debounce(updateStatusbar, 100);
+
 	atom.workspace.observeTextEditors(editor => {
 		const buffer = editor.getBuffer();
-		debouncedLint = debouncedLint || _.debounce(lint, 50);
-		debouncedDisplayErrors = debouncedDisplayErrors || _.debounce(displayErrors, 200);
 
 		editor.emitter.off('scroll-top-changed', debouncedDisplayErrors);
+		editor.emitter.off('did-change-cursor-position', debouncedUpdateStatusbar);
 		buffer.emitter.off('did-save did-change-modified', debouncedLint);
 
 		if (!atom.config.get('jshint.validateOnlyOnSave')) {
@@ -267,6 +273,7 @@ const registerEvents = () => {
 		buffer.onDidSave(debouncedLint);
 
 		editor.onDidChangeScrollTop(debouncedDisplayErrors);
+		editor.onDidChangeCursorPosition(debouncedUpdateStatusbar);
 	});
 
 	workspaceElement.addEventListener('editor:will-be-removed', (e, editorView) => {
@@ -275,8 +282,6 @@ const registerEvents = () => {
 			removeMarkersForEditorId(editorView.editor.id);
 		}
 	});
-
-	workspaceElement.addEventListener('cursor:moved', updateStatusbar);
 };
 
 export const config = plugin.config = {
