@@ -1,8 +1,7 @@
 'use babel';
 
 /* globals atom */
-import { CompositeDisposable } from 'atom';
-import emissary from 'emissary';
+import { CompositeDisposable } from 'event-kit';
 import path from 'path';
 import reactDomPragma from 'react-dom-pragma';
 import lazyRequire from 'lazy-req';
@@ -18,8 +17,6 @@ const markersByEditorId = {};
 const errorsByEditorId = {};
 const subscriptionTooltips = new CompositeDisposable();
 let _;
-
-emissary.Subscriber.extend(plugin);
 
 const SUPPORTED_GRAMMARS = [
 	'source.js',
@@ -299,7 +296,7 @@ export const config = plugin.config = {
 export const activate = plugin.activate = () => {
 	_ = lodash();
 	registerEvents();
-	plugin.subscribe(atom.config.observe('jshint.validateOnlyOnSave', registerEvents));
+	atom.config.observe('jshint.validateOnlyOnSave', registerEvents);
 	atom.commands.add('atom-workspace', 'jshint:lint', lint);
 };
 
