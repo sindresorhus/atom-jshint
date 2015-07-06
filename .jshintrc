@@ -9,6 +9,5 @@
 	"newcap": true,
 	"noarg": true,
 	"undef": true,
-	"unused": "vars",
-	"esnext": true
+	"unused": "vars"
 }
