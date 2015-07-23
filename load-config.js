@@ -23,7 +23,8 @@ const findFileResults = {};
  *
  * @returns {string} normalized filename
  */
-const findFile = (name, dir=process.cwd()) => {
+const findFile = (name, dir) => {
+  if (!dir) { dir = process.cwd(); }
   const filename = path.normalize(path.join(dir, name));
   if (findFileResults[filename] !== undefined) {
     return findFileResults[filename];
