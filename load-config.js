@@ -18,12 +18,11 @@ const findFileResults = {};
  * or hits the root.
  *
  * @param {string} name filename to search for (e.g. .jshintrc)
- * @param {string} dir  directory to start search from (default:
- *                      current working directory)
+ * @param {string} dir  directory to start search from
  *
  * @returns {string} normalized filename
  */
-const findFile = (name, dir=process.cwd()) => {
+const findFile = (name, dir) => {
   const filename = path.normalize(path.join(dir, name));
   if (findFileResults[filename] !== undefined) {
     return findFileResults[filename];
