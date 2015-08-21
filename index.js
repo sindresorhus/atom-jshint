@@ -1,7 +1,5 @@
 'use babel';
-
-/* globals atom */
-import { CompositeDisposable } from 'event-kit';
+import {CompositeDisposable} from 'event-kit';
 import path from 'path';
 import reactDomPragma from 'react-dom-pragma';
 import lazyRequire from 'lazy-req';
@@ -54,6 +52,7 @@ const getErrorsForEditor = () => {
 
 const destroyMarkerAtRow = row => {
 	const editor = atom.workspace.getActiveTextEditor();
+
 	if (markersByEditorId[editor.id] && markersByEditorId[editor.id][row]) {
 		markersByEditorId[editor.id][row].destroy();
 		delete markersByEditorId[editor.id][row];
@@ -61,8 +60,11 @@ const destroyMarkerAtRow = row => {
 };
 
 const getRowForError = error => {
-	const line = error[0].line || 1; // JSHint reports `line: 0` when config error
+	// JSHint reports `line: 0` when config error
+	const line = error[0].line || 1;
+
 	const row = line - 1;
+
 	return row;
 };
 
@@ -101,6 +103,7 @@ const getMarkerAtRow = row => {
 
 const updateStatusbar = () => {
 	const statusBar = atom.views.getView(atom.workspace).querySelector('.status-bar');
+
 	if (!statusBar) {
 		return;
 	}
@@ -110,6 +113,7 @@ const updateStatusbar = () => {
 	}
 
 	const editor = atom.workspace.getActiveTextEditor();
+
 	if (!editor || !errorsByEditorId[editor.id]) {
 		updateStatusText();
 		return;
@@ -126,23 +130,22 @@ const getReasonsForError = error => {
 	return _.map(error, el => `${el.character}: ${el.reason}`);
 };
 
-
 const addReasons = (marker, error) => {
 	const row = getRowForError(error);
 	const editorElement = atom.views.getView(atom.workspace.getActiveTextEditor());
 	const reasons = `<div class="jshint-errors">${getReasonsForError(error).join('<br>')}</div>`;
-
-	const target = editorElement.shadowRoot.querySelectorAll('.jshint-line-number.line-number-' + row);
+	const target = editorElement.shadowRoot.querySelectorAll(`.jshint-line-number.line-number-${row}`);
 	const tooltip = atom.tooltips.add(target, {
 		title: reasons,
 		placement: 'bottom',
 		delay: {show: 200}
 	});
+
 	subscriptionTooltips.add(tooltip);
 };
 
-const displayError = error => {
-	const row = getRowForError(error);
+const displayError = err => {
+	const row = getRowForError(err);
 
 	if (getMarkerAtRow(row)) {
 		return;
@@ -153,7 +156,7 @@ const displayError = error => {
 	editor.decorateMarker(marker, {type: 'line', class: 'jshint-line'});
 	editor.decorateMarker(marker, {type: 'line-number', class: 'jshint-line-number'});
 	saveMarker(marker, row);
-	addReasons(marker, error);
+	addReasons(marker, err);
 };
 
 const displayErrors = () => {

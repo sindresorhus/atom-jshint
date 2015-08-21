@@ -1,5 +1,4 @@
 'use babel';
-
 import fs from 'fs';
 import path from 'path';
 import shjs from 'shelljs';
@@ -23,24 +22,24 @@ const findFileResults = {};
  * @returns {string} normalized filename
  */
 const findFile = (name, dir) => {
-  const filename = path.normalize(path.join(dir, name));
-  if (findFileResults[filename] !== undefined) {
-    return findFileResults[filename];
-  }
+	const filename = path.normalize(path.join(dir, name));
+	if (findFileResults[filename] !== undefined) {
+		return findFileResults[filename];
+	}
 
-  const parent = path.resolve(dir, '../');
+	const parent = path.resolve(dir, '../');
 
-  if (shjs.test('-e', filename)) {
-    findFileResults[filename] = filename;
-    return filename;
-  }
+	if (shjs.test('-e', filename)) {
+		findFileResults[filename] = filename;
+		return filename;
+	}
 
-  if (dir === parent) {
-    findFileResults[filename] = null;
-    return null;
-  }
+	if (dir === parent) {
+		findFileResults[filename] = null;
+		return null;
+	}
 
-  return findFile(name, parent);
+	return findFile(name, parent);
 };
 
 /**
@@ -52,19 +51,19 @@ const findFile = (name, dir) => {
  * @returns {string} a path to the config file
  */
 const findConfig = file => {
-  const dir  = path.dirname(path.resolve(file));
-  const home = path.normalize(path.join(userHome, '.jshintrc'));
+	const dir = path.dirname(path.resolve(file));
+	const home = path.normalize(path.join(userHome, '.jshintrc'));
 
-  const proj = findFile('.jshintrc', dir);
-  if (proj) {
-    return proj;
-  }
+	const proj = findFile('.jshintrc', dir);
+	if (proj) {
+		return proj;
+	}
 
-  if (shjs.test('-e', home)) {
-    return home;
-  }
+	if (shjs.test('-e', home)) {
+		return home;
+	}
 
-  return null;
+	return null;
 };
 
 /**
@@ -76,18 +75,18 @@ const findConfig = file => {
  * @returns {object} config object
  */
 const loadNpmConfig = file => {
-  const dir = path.dirname(path.resolve(file));
-  const fp  = findFile('package.json', dir);
+	const dir = path.dirname(path.resolve(file));
+	const fp = findFile('package.json', dir);
 
-  if (!fp) {
-    return null;
-  }
+	if (!fp) {
+		return null;
+	}
 
-  try {
-    return require(fp).jshintConfig;
-  } catch (e) {
-    return null;
-  }
+	try {
+		return require(fp).jshintConfig;
+	} catch (e) {
+		return null;
+	}
 };
 // / //
 

@@ -13,6 +13,9 @@
   "engines": {
     "atom": ">=1.0.0"
   },
+  "scripts": {
+    "test": "xo"
+  },
   "keywords": [
     "lint",
     "javascript",
@@ -30,5 +33,21 @@
     "shelljs": "^0.5.0",
     "strip-json-comments": "^1.0.1",
     "user-home": "^2.0.0"
+  },
+  "devDependencies": {
+    "xo": "*"
+  },
+  "xo": {
+    "esnext": true,
+    "envs": [
+      "node",
+      "browser"
+    ],
+    "globals": [
+      "atom"
+    ],
+    "ignores": [
+      "fixture*"
+    ]
   }
 }
