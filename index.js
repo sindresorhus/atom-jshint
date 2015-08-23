@@ -204,8 +204,11 @@ const lint = () => {
 	}
 
 	const config = file ? loadConfig()(file) : {};
-
 	const linter = (atom.config.get('jshint.supportLintingJsx') || atom.config.get('jshint.transformJsx')) ? jsxhint().JSXHINT : jshint().JSHINT;
+
+	if (Object.keys(config).length === 0 && atom.config.get('jshint.onlyConfig')) {
+		return;
+	}
 
 	const origCode = editor.getText();
 	const grammarScope = editor.getGrammar().scopeName;
@@ -285,6 +288,11 @@ const registerEvents = () => {
 };
 
 export const config = plugin.config = {
+	onlyConfig: {
+		type: 'boolean',
+		default: false,
+		description: 'Disable linter if there is no config file found for the linter.'
+	},
 	validateOnlyOnSave: {
 		type: 'boolean',
 		default: false
@@ -299,6 +307,7 @@ export const config = plugin.config = {
 export const activate = plugin.activate = () => {
 	_ = lodash();
 	registerEvents();
+	atom.config.observe('jshint.onlyConfig', registerEvents);
 	atom.config.observe('jshint.validateOnlyOnSave', registerEvents);
 	atom.commands.add('atom-workspace', 'jshint:lint', lint);
 };
