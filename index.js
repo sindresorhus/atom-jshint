@@ -13,7 +13,10 @@ const loadConfig = lazyReq('./load-config');
 const plugin = {};
 const markersByEditorId = {};
 const errorsByEditorId = {};
-const subscriptionTooltips = new CompositeDisposable();
+
+let subscriptionTooltips = new CompositeDisposable();
+let subscriptionEvents = new CompositeDisposable();
+
 let _;
 
 const SUPPORTED_GRAMMARS = [
@@ -80,6 +83,7 @@ const getRowForError = error => {
 
 const clearOldMarkers = (editor, errors) => {
 	subscriptionTooltips.dispose();
+	subscriptionTooltips = new CompositeDisposable();
 
 	const rows = _.map(errors, error => getRowForError(error));
 
@@ -260,36 +264,31 @@ let debouncedDisplayErrors = null;
 let debouncedUpdateStatusbar = null;
 
 const registerEvents = () => {
-	lint();
-	const workspaceElement = atom.views.getView(atom.workspace);
+	subscriptionEvents.dispose();
+	subscriptionEvents = new CompositeDisposable();
 
-	debouncedLint = debouncedLint || _.debounce(lint, 50);
-	debouncedDisplayErrors = debouncedDisplayErrors || _.debounce(displayErrors, 200);
-	debouncedUpdateStatusbar = debouncedUpdateStatusbar || _.debounce(updateStatusbar, 100);
+	updateStatusbar();
 
-	atom.workspace.observeTextEditors(editor => {
-		const buffer = editor.getBuffer();
+	const editor = atom.workspace.getActiveTextEditor();
+	if (!editor) {
+		return;
+	}
 
-		editor.emitter.off('scroll-top-changed', debouncedDisplayErrors);
-		editor.emitter.off('did-change-cursor-position', debouncedUpdateStatusbar);
-		buffer.emitter.off('did-save did-change-modified', debouncedLint);
+	displayErrors(editor);
 
-		if (!atom.config.get('jshint.validateOnlyOnSave')) {
-			buffer.onDidChangeModified(debouncedLint);
-		}
+	if (!atom.config.get('jshint.validateOnlyOnSave')) {
+		subscriptionEvents.add(editor.onDidChange(debouncedLint));
+	}
 
-		buffer.onDidSave(debouncedLint);
+	subscriptionEvents.add(editor.onDidSave(debouncedLint));
+	subscriptionEvents.add(editor.onDidChangeScrollTop(() => debouncedDisplayErrors(editor)));
+	subscriptionEvents.add(editor.onDidChangeCursorPosition(debouncedUpdateStatusbar));
 
-		editor.onDidChangeScrollTop(debouncedDisplayErrors);
-		editor.onDidChangeCursorPosition(debouncedUpdateStatusbar);
-	});
-
-	workspaceElement.addEventListener('editor:will-be-removed', (e, editorView) => {
-		if (editorView && editorView.editor) {
-			removeErrorsForEditorId(editorView.editor.id);
-			removeMarkersForEditorId(editorView.editor.id);
-		}
-	});
+	subscriptionEvents.add(editor.onDidDestroy(() => {
+		removeErrorsForEditorId(editor.id);
+		displayErrors(editor);
+		removeMarkersForEditorId(editor.id);
+	}));
 };
 
 export const config = plugin.config = {
@@ -309,13 +308,25 @@ export const config = plugin.config = {
 	}
 };
 
+let subscriptionMain = null;
+
 export const activate = plugin.activate = () => {
 	_ = lodash();
-	registerEvents();
-	atom.config.observe('jshint.onlyConfig', registerEvents);
-	atom.config.observe('jshint.validateOnlyOnSave', registerEvents);
-	atom.commands.add('atom-workspace', 'jshint:lint', lint);
-	atom.commands.add('atom-workspace', 'jshint:go-to-error', goToError);
+	debouncedLint = _.debounce(lint, 200);
+	debouncedDisplayErrors = _.debounce(displayErrors, 200);
+	debouncedUpdateStatusbar = _.debounce(updateStatusbar, 100);
+
+	subscriptionMain = new CompositeDisposable();
+	subscriptionMain.add(atom.workspace.observeActivePaneItem(registerEvents));
+	subscriptionMain.add(atom.config.observe('jshint.validateOnlyOnSave', registerEvents));
+	subscriptionMain.add(atom.commands.add('atom-workspace', 'jshint:lint', lint));
+	subscriptionMain.add(atom.commands.add('atom-workspace', 'jshint:go-to-error', goToError));
+};
+
+export const deactivate = plugin.deactivate = () => {
+	subscriptionTooltips.dispose();
+	subscriptionEvents.dispose();
+	subscriptionMain.dispose();
 };
 
 export default plugin;
