@@ -46,9 +46,7 @@ const updateStatusText = (line, character, reason) => {
 	currentChar = character;
 };
 
-const getMarkersForEditor = () => {
-	const editor = atom.workspace.getActiveTextEditor();
-
+const getMarkersForEditor = editor => {
 	if (editor && markersByEditorId[editor.id]) {
 		return markersByEditorId[editor.id];
 	}
@@ -56,19 +54,15 @@ const getMarkersForEditor = () => {
 	return {};
 };
 
-const getErrorsForEditor = () => {
-	const editor = atom.workspace.getActiveTextEditor();
-
-	if (editor && errorsByEditorId[editor.id]) {
+const getErrorsForEditor = editor => {
+	if (errorsByEditorId[editor.id]) {
 		return errorsByEditorId[editor.id];
 	}
 
 	return [];
 };
 
-const destroyMarkerAtRow = row => {
-	const editor = atom.workspace.getActiveTextEditor();
-
+const destroyMarkerAtRow = (editor, row) => {
 	if (markersByEditorId[editor.id] && markersByEditorId[editor.id][row]) {
 		markersByEditorId[editor.id][row].destroy();
 		delete markersByEditorId[editor.id][row];
@@ -84,22 +78,20 @@ const getRowForError = error => {
 	return row;
 };
 
-const clearOldMarkers = errors => {
+const clearOldMarkers = (editor, errors) => {
 	subscriptionTooltips.dispose();
 
 	const rows = _.map(errors, error => getRowForError(error));
 
-	const oldMarkers = getMarkersForEditor();
+	const oldMarkers = getMarkersForEditor(editor);
 	_.each(_.keys(oldMarkers), row => {
 		if (!_.contains(rows, row)) {
-			destroyMarkerAtRow(row);
+			destroyMarkerAtRow(editor, row);
 		}
 	});
 };
 
-const saveMarker = (marker, row) => {
-	const editor = atom.workspace.getActiveTextEditor();
-
+const saveMarker = (editor, marker, row) => {
 	if (!markersByEditorId[editor.id]) {
 		markersByEditorId[editor.id] = {};
 	}
@@ -107,9 +99,7 @@ const saveMarker = (marker, row) => {
 	markersByEditorId[editor.id][row] = marker;
 };
 
-const getMarkerAtRow = row => {
-	const editor = atom.workspace.getActiveTextEditor();
-
+const getMarkerAtRow = (editor, row) => {
 	if (!markersByEditorId[editor.id]) {
 		return null;
 	}
@@ -146,9 +136,9 @@ const getReasonsForError = error => {
 	return _.map(error, el => `${el.character}: ${el.reason}`);
 };
 
-const addReasons = (marker, error) => {
+const addReasons = (editor, marker, error) => {
 	const row = getRowForError(error);
-	const editorElement = atom.views.getView(atom.workspace.getActiveTextEditor());
+	const editorElement = atom.views.getView(editor);
 	const reasons = `<div class="jshint-errors">${getReasonsForError(error).join('<br>')}</div>`;
 	const target = editorElement.shadowRoot.querySelectorAll(`.jshint-line-number.line-number-${row}`);
 	const tooltip = atom.tooltips.add(target, {
@@ -160,26 +150,25 @@ const addReasons = (marker, error) => {
 	subscriptionTooltips.add(tooltip);
 };
 
-const displayError = err => {
+const displayError = (editor, err) => {
 	const row = getRowForError(err);
 
-	if (getMarkerAtRow(row)) {
+	if (getMarkerAtRow(editor, row)) {
 		return;
 	}
 
-	const editor = atom.workspace.getActiveTextEditor();
 	const marker = editor.markBufferRange([[row, 0], [row, 1]]);
 	editor.decorateMarker(marker, {type: 'line', class: 'jshint-line'});
 	editor.decorateMarker(marker, {type: 'line-number', class: 'jshint-line-number'});
-	saveMarker(marker, row);
-	addReasons(marker, err);
+	saveMarker(editor, marker, row);
+	addReasons(editor, marker, err);
 };
 
-const displayErrors = () => {
-	const errors = _.compact(getErrorsForEditor());
-	clearOldMarkers(errors);
+const displayErrors = editor => {
+	const errors = _.compact(getErrorsForEditor(editor));
+	clearOldMarkers(editor, errors);
 	updateStatusbar();
-	_.each(errors, displayError);
+	_.each(errors, err => displayError(editor, err));
 };
 
 const removeMarkersForEditorId = id => {
@@ -214,7 +203,7 @@ const lint = () => {
 	// Remove errors and don't lint if file is ignored in .jshintignore
 	if (file && cli().gather({args: [file]}).length === 0) {
 		removeErrorsForEditorId(editor.id);
-		displayErrors();
+		displayErrors(editor);
 		removeMarkersForEditorId(editor.id);
 		return;
 	}
@@ -263,7 +252,7 @@ const lint = () => {
 		errorsByEditorId[editor.id] = ret;
 	}
 
-	displayErrors();
+	displayErrors(editor);
 };
 
 let debouncedLint = null;
