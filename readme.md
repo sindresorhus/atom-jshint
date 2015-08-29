@@ -19,10 +19,11 @@ Or Settings → Install → Search for `jshint` *(install `Jshint`, not `Atom Js
 - Validates in realtime.
 - Line and line number turns red on error.
 - Hover over the line number to see the errors.
-- Displays the error from the current line or the first error in the statusbar.
+- Displays the error from the current line or the first error in the statusbar; clicking the statusbar message moves the cursor to the error.
 - Reads your `.jshintrc` config and `jshintConfig` in package.json using the same logic as JSHint.
 - Option to only validate on save.
 - Command `Jshint: Lint` to manually lint.
+- Command `Jshint: Go To Error` to move the cursor to the error displayed in the statusbar.
 - Supports [React JSX](http://facebook.github.io/react/docs/jsx-in-depth.html). *(must be enabled in Settings)*
 
 
