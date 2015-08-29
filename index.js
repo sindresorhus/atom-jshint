@@ -22,12 +22,28 @@ const SUPPORTED_GRAMMARS = [
 	'source.js.jsx'
 ];
 
+let currentLine = null;
+let currentChar = null;
+
+const goToError = () => {
+	const editor = atom.workspace.getActiveTextEditor();
+
+	if (!editor || !currentLine || !currentChar) {
+		return;
+	}
+
+	editor.setCursorBufferPosition([currentLine - 1, currentChar - 1]);
+};
+
 const jsHintStatusBar = document.createElement('span');
 jsHintStatusBar.setAttribute('id', 'jshint-statusbar');
 jsHintStatusBar.classList.add('inline-block');
+jsHintStatusBar.addEventListener('click', goToError);
 
 const updateStatusText = (line, character, reason) => {
 	jsHintStatusBar.textContent = line && character && reason ? `JSHint ${line}:${character} ${reason}` : '';
+	currentLine = line;
+	currentChar = character;
 };
 
 const getMarkersForEditor = () => {
@@ -310,6 +326,7 @@ export const activate = plugin.activate = () => {
 	atom.config.observe('jshint.onlyConfig', registerEvents);
 	atom.config.observe('jshint.validateOnlyOnSave', registerEvents);
 	atom.commands.add('atom-workspace', 'jshint:lint', lint);
+	atom.commands.add('atom-workspace', 'jshint:go-to-error', goToError);
 };
 
 export default plugin;
