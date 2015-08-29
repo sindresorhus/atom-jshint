@@ -22,8 +22,8 @@ const SUPPORTED_GRAMMARS = [
 	'source.js.jsx'
 ];
 
-let currentLine = null;
-let currentChar = null;
+let currentLine;
+let currentChar;
 
 const goToError = () => {
 	const editor = atom.workspace.getActiveTextEditor();
@@ -35,7 +35,7 @@ const goToError = () => {
 	editor.setCursorBufferPosition([currentLine - 1, currentChar - 1]);
 };
 
-const jsHintStatusBar = document.createElement('span');
+const jsHintStatusBar = document.createElement('a');
 jsHintStatusBar.setAttribute('id', 'jshint-statusbar');
 jsHintStatusBar.classList.add('inline-block');
 jsHintStatusBar.addEventListener('click', goToError);
