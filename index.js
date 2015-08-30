@@ -136,6 +136,32 @@ const updateStatusbar = () => {
 	updateStatusText(error.line, error.character, error.reason);
 };
 
+const goToNextError = () => {
+	const editor = atom.workspace.getActiveTextEditor();
+
+	if (!editor || !markersByEditorId[editor.id] || !errorsByEditorId[editor.id]) {
+		return;
+	}
+
+	const cursorRow = editor.getCursorBufferPosition().row;
+
+	const markerRows = _.sortBy(_.keys(getMarkersForEditor(editor)));
+	let nextRow = _.find(markerRows, x => x > cursorRow);
+	if (!nextRow) {
+		nextRow = _.first(markerRows);
+	}
+	if (!nextRow) {
+		return;
+	}
+
+	nextRow = Number(nextRow);
+
+	const errors = errorsByEditorId[editor.id][nextRow + 1];
+	if (errors) {
+		editor.setCursorBufferPosition([nextRow, errors[0].character - 1]);
+	}
+};
+
 const getReasonsForError = error => {
 	return _.map(error, el => `${el.character}: ${el.reason}`);
 };
@@ -278,6 +304,7 @@ const registerEvents = () => {
 
 	if (!atom.config.get('jshint.validateOnlyOnSave')) {
 		subscriptionEvents.add(editor.onDidChange(debouncedLint));
+		debouncedLint();
 	}
 
 	subscriptionEvents.add(editor.onDidSave(debouncedLint));
@@ -321,6 +348,7 @@ export const activate = plugin.activate = () => {
 	subscriptionMain.add(atom.config.observe('jshint.validateOnlyOnSave', registerEvents));
 	subscriptionMain.add(atom.commands.add('atom-workspace', 'jshint:lint', lint));
 	subscriptionMain.add(atom.commands.add('atom-workspace', 'jshint:go-to-error', goToError));
+	subscriptionMain.add(atom.commands.add('atom-workspace', 'jshint:go-to-next-error', goToNextError));
 };
 
 export const deactivate = plugin.deactivate = () => {
