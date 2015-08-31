@@ -131,7 +131,7 @@ const updateStatusbar = () => {
 
 	const line = editor.getCursorBufferPosition().row + 1;
 	let error = errorsByEditorId[editor.id][line] || _.first(_.compact(errorsByEditorId[editor.id]));
-	error = error[0];
+	error = Array.isArray(error) ? error[0] : {};
 
 	updateStatusText(error.line, error.character, error.reason);
 };
