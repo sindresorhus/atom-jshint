@@ -145,7 +145,7 @@ const goToNextError = () => {
 
 	const cursorRow = editor.getCursorBufferPosition().row;
 
-	const markerRows = _.sortBy(_.keys(getMarkersForEditor(editor)));
+	const markerRows = _.sortBy(_.map(_.keys(getMarkersForEditor(editor)), x => Number(x)));
 	let nextRow = _.find(markerRows, x => x > cursorRow);
 	if (!nextRow) {
 		nextRow = _.first(markerRows);
@@ -153,8 +153,6 @@ const goToNextError = () => {
 	if (!nextRow) {
 		return;
 	}
-
-	nextRow = Number(nextRow);
 
 	const errors = errorsByEditorId[editor.id][nextRow + 1];
 	if (errors) {
