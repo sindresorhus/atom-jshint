@@ -161,7 +161,7 @@ const goToNextError = () => {
 };
 
 const getReasonsForError = error => {
-	return _.map(error, el => `${el.character}: ${el.reason}`);
+	return _.map(error, el => `${el.character} [${el.code}]: ${el.reason}`);
 };
 
 const addReasons = (editor, marker, error) => {
