@@ -1,4 +1,4 @@
-'use babel';
+/** @babel */
 import {CompositeDisposable} from 'event-kit';
 import path from 'path';
 import reactDomPragma from 'react-dom-pragma';
