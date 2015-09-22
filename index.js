@@ -18,6 +18,7 @@ let subscriptionTooltips = new CompositeDisposable();
 let subscriptionEvents = new CompositeDisposable();
 
 let _;
+let statusBar;
 
 const SUPPORTED_GRAMMARS = [
 	'source.js',
@@ -112,8 +113,6 @@ const getMarkerAtRow = (editor, row) => {
 };
 
 const updateStatusbar = () => {
-	const statusBar = atom.views.getView(atom.workspace).querySelector('.status-bar');
-
 	if (!statusBar) {
 		return;
 	}
@@ -354,5 +353,7 @@ export const deactivate = plugin.deactivate = () => {
 	subscriptionEvents.dispose();
 	subscriptionMain.dispose();
 };
+
+export const consumeStatusBar = plugin.consumeStatusBar = instance => statusBar = instance;
 
 export default plugin;
