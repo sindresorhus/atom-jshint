@@ -1,7 +1,6 @@
 /** @babel */
 import {CompositeDisposable} from 'event-kit';
 import path from 'path';
-import reactDomPragma from 'react-dom-pragma';
 import lazyRequire from 'lazy-req';
 
 const lazyReq = lazyRequire(require);
@@ -241,14 +240,8 @@ const lint = () => {
 		return;
 	}
 
-	const origCode = editor.getText();
-	const grammarScope = editor.getGrammar().scopeName;
-	const isJsx = grammarScope === 'source.jsx' || grammarScope === 'source.js.jsx';
-	const code = isJsx ? reactDomPragma(origCode) : origCode;
-	const pragmaWasAdded = code !== origCode;
-
 	try {
-		linter(code, config, config.globals);
+		linter(editor.getText(), config, config.globals);
 	} catch (err) {}
 
 	removeErrorsForEditorId(editor.id);
@@ -260,10 +253,6 @@ const lint = () => {
 		// aggregate same-line errors
 		const ret = [];
 		_.each(errors, el => {
-			if (pragmaWasAdded) {
-				el.line--;
-			}
-
 			const l = el.line;
 
 			if (Array.isArray(ret[l])) {
