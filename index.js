@@ -10,7 +10,6 @@ const jshint = lazyReq('jshint');
 const jsxhint = lazyReq('jshint-jsx');
 const cli = lazyReq('jshint/src/cli');
 const loadConfig = lazyReq('./load-config');
-const plugin = {};
 const markersByEditorId = {};
 const errorsByEditorId = {};
 
@@ -315,7 +314,7 @@ const registerEvents = () => {
 	}));
 };
 
-export const config = plugin.config = {
+export const config = {
 	onlyConfig: {
 		type: 'boolean',
 		default: false,
@@ -334,7 +333,7 @@ export const config = plugin.config = {
 
 let subscriptionMain = null;
 
-export const activate = plugin.activate = () => {
+export const activate = () => {
 	_ = lodash();
 	debouncedLint = _.debounce(lint, 200);
 	debouncedDisplayErrors = _.debounce(displayErrors, 200);
@@ -348,12 +347,10 @@ export const activate = plugin.activate = () => {
 	subscriptionMain.add(atom.commands.add('atom-workspace', 'jshint:go-to-next-error', goToNextError));
 };
 
-export const deactivate = plugin.deactivate = () => {
+export const deactivate = () => {
 	subscriptionTooltips.dispose();
 	subscriptionEvents.dispose();
 	subscriptionMain.dispose();
 };
 
-export const consumeStatusBar = plugin.consumeStatusBar = instance => statusBar = instance;
-
-export default plugin;
+export const consumeStatusBar = instance => statusBar = instance;
