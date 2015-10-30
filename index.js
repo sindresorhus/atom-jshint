@@ -166,6 +166,11 @@ const addReasons = (editor, marker, error) => {
 	const editorElement = atom.views.getView(editor);
 	const reasons = `<div class="jshint-errors">${getReasonsForError(error).join('<br>')}</div>`;
 	const target = editorElement.shadowRoot.querySelector(`.line-number[data-buffer-row="${row}"]`);
+
+	if (!target) {
+		return;
+	}
+
 	const tooltip = atom.tooltips.add(target, {
 		title: reasons,
 		placement: 'bottom',
