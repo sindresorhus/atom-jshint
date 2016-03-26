@@ -345,4 +345,6 @@ export const deactivate = () => {
 	subscriptionMain.dispose();
 };
 
-export const consumeStatusBar = instance => statusBar = instance;
+export const consumeStatusBar = instance => {
+	statusBar = instance;
+};
