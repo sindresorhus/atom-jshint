@@ -1,8 +1,12 @@
+# Deprecated
+
+I failed to [find an active maintainer](https://github.com/sindresorhus/atom-jshint/issues/141). See [linter-jshint](https://github.com/AtomLinter/linter-jshint) for an alternative. However, I would strongly recommend trying out [ESLint](http://eslint.org) ([Atom plugin](https://github.com/AtomLinter/linter-eslint)) instead. It's just so much better than JSHint. [XO](https://github.com/sindresorhus/xo) ([Atom plugin](https://github.com/sindresorhus/atom-linter-xo)), which is an ESLint wrapper with sensible default, is also a good choice.
+
+---
+
 # JSHint
 
 > Validate JavaScript with [JSHint](http://jshint.com)
-
-### [Maintainer wanted](https://github.com/sindresorhus/atom-jshint/issues/141)
 
 ![](https://cloud.githubusercontent.com/assets/170270/3834266/54ad6b1c-1daf-11e4-9c46-98e6e4abab07.png)
 
@@ -32,4 +36,4 @@ Or Settings → Install → Search for `jshint` *(install `Jshint`, not `Atom Js
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](https://sindresorhus.com)
